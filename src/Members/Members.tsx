@@ -17,14 +17,13 @@ import {
 import Select from 'react-select';
 import { withTheme } from 'styled-components';
 
+import {DeleteConfirmation} from '../app/components/DeleteModal';
 import { PageContainer } from '../app/components/PageContainer';
 import {
   Checkbox,
   Table,
 } from '../app/components/Table';
-import {
-  useStateValue,
-} from '../firebase';
+import { useStateValue } from '../firebase';
 import { theme } from '../theme';
 
 export type IMembershipType = '' | 'member' | 'guest';
@@ -171,15 +170,12 @@ const Members = ({ theme }: IProps) => {
                                 : line.paid ? <MdDone color={theme.success500} /> : <MdClose color={theme.danger500} />}
                             </td>
                             <td>
-                              <Button color="danger"
-                                size="sm"
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  e.stopPropagation();
-                                  dispatch({ type: 'REMOVE_MEMBER', id: line.id });
-                                }}>
-                                Delete
-                          </Button>
+                          <DeleteConfirmation
+                            onDelete={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              dispatch({ type: 'REMOVE_MEMBER', id: line.id });
+                            }} />
                             </td>
                           </tr>;
                         })
@@ -187,12 +183,9 @@ const Members = ({ theme }: IProps) => {
                     </tbody>
                   </Table>
               }
-
-
             </CardBody>
           </Card>
         </Col>
-
       </Row>
     </PageContainer>
   );
