@@ -3,30 +3,30 @@ import {
   CardBody,
 } from 'fab-ui';
 import React, { FC } from 'react';
+import { connect } from 'react-redux';
 import { Spring } from 'react-spring/renderprops';
 import styled from 'styled-components';
 
-import { useStateValue } from '../firebase';
+import { IGlobalState } from '../reducers';
 
 interface IProps {
   clubNight: number;
 }
 
+type Props = IProps & ReturnType<typeof mapStateToProps>;
+
 const StatsCard = styled(Card)`
   color: ${({ theme }) => theme.primary500};
 `;
 
-export const SessionPayments: FC<IProps> = () => {
-  const { state, dispatch } = useStateValue();
-  const { attendance, members } = state;
+export const SessionPayments: FC<Props> = ({ attendance, members }) => {
   const ok = attendance.map((row) => {
     const member = members.find((member) => member.id === row.member);
     return {
       ...row,
-      member: member || {membership: ''},
+      member: member || { membership: '' },
     };
   });
-  console.log('ok', ok);
   const total = ok.filter((l) => l.attended && l.member.membership === 'guest').length;
   const paid = ok.filter((l) => l.paid && l.member.membership === 'guest').length;
   const percent = total === 0 ? 1 : (paid / total);
@@ -48,3 +48,13 @@ export const SessionPayments: FC<IProps> = () => {
     </StatsCard>
   )
 }
+
+const mapStateToProps = (state: IGlobalState) => ({
+  attendance: state.attendance.data,
+  members: state.member.data,
+});
+
+
+export default connect(
+  mapStateToProps,
+)(SessionPayments);

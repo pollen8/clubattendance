@@ -37,8 +37,9 @@ import * as attendanceActions from './AttendanceActions';
 // import { SessionAttendance } from './SessionAttendance';
 // import { SessionPayments } from './SessionPayments';
 
-const Tr = styled.tr<{ attended: boolean }>`
+const Tr = styled.tr<{ attended: boolean, guestNotPaid: boolean }>`
   color: ${({ attended, theme }) => attended ? theme.grey800 : theme.grey500} !important;
+  background: ${({guestNotPaid, theme}) => guestNotPaid ? theme.danger100: 'transparent'};
 `;
 
 export interface IClubNight {
@@ -79,6 +80,7 @@ const Attendance: FC<Props> = ({ theme, attendance, getAttendance, members, getM
     ? { value: blankMember, label: '' }
     : { value: m.member, label: m.member.name };
   let attendedTotal = 0;
+  let guestFeeTotal = 0;
 
   useEffect(() => {
     (async () => {
@@ -138,7 +140,7 @@ const Attendance: FC<Props> = ({ theme, attendance, getAttendance, members, getM
                     <th>-</th>
                   </tr>
                 </thead>
-                <tbody>Number
+                <tbody>
                   {
                     members
                       .map((member: IMember, i: number) => {
@@ -150,7 +152,12 @@ const Attendance: FC<Props> = ({ theme, attendance, getAttendance, members, getM
                         if (record && record.attended) {
                           attendedTotal++;
                         }
-                        return <Tr key={member.id} attended={Boolean(record && record.attended)}>
+                        if (member.membership === 'guest' && record && record.paid) {
+                          guestFeeTotal = guestFeeTotal + 7;
+                        }
+                        return <Tr key={member.id} 
+                          attended={Boolean(record && record.attended)}
+                          guestNotPaid={Boolean(member.membership === 'guest' && record && record.attended && !record.paid)}>
                           <td>
                             <label htmlFor={`attended-${i}`}>
                               {member.name}
@@ -207,6 +214,9 @@ const Attendance: FC<Props> = ({ theme, attendance, getAttendance, members, getM
                     <td></td>
                     <td>
                       {attendedTotal}
+                    </td>
+                    <td>
+                      &pound;{guestFeeTotal}
                     </td>
                   </tr>
                 </tfoot>
