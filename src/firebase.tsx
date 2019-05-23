@@ -7,7 +7,7 @@ import React, {
 } from 'react';
 
 import { IAttendance } from './Attendance/Attendance';
-import fire, { db } from './fire';
+import { db } from './fire';
 import { IMember } from './Members/Members';
 
 export interface IClubNightManager {
@@ -16,6 +16,7 @@ export interface IClubNightManager {
 }
 
 interface IStore {
+  activeDate: Date;
   attendance: IAttendance[];
   members: IMember[];
   clubNightManagers: IClubNightManager[];
@@ -25,12 +26,16 @@ interface IContext {
   state: IStore,
   dispatch?: any;
 }
+
+const initialState: IStore = {
+  activeDate: new Date(),
+  attendance: [],
+  clubNightManagers: [],
+  members: [],
+};
+
 export const FirebaseContext = createContext<IContext>({
-  state: {
-    attendance: [],
-    members: [],
-    clubNightManagers: [],
-  }
+  state: initialState,
 });
 
 type TAction =
@@ -43,7 +48,8 @@ type TAction =
   | { type: 'UPSERT_MEMBER', member: IMember; }
   | { type: 'SET_ATTENDACE', attendance: IAttendance[]; }
   | { type: 'SET_CLUBNIGHT_MANAGERS', managers: IClubNightManager[]; }
-  | { type: 'SET_ATTENDACE_RECORD', record: IAttendance };
+  | { type: 'SET_ATTENDACE_RECORD', record: IAttendance }
+  | { type: 'SET_ACTIVE_DATE', date: Date };
 
 const reducer = (state: IStore, action: TAction): IStore => {
   switch (action.type) {
@@ -56,11 +62,13 @@ const reducer = (state: IStore, action: TAction): IStore => {
       db.collection('members').doc(action.id).delete();
       return { ...state, members: state.members.filter((member) => member.id !== action.id) };
     case 'SET_CLUBNIGHT_MANAGERS':
-      return {...state, clubNightManagers: action.managers};
+      return { ...state, clubNightManagers: action.managers };
     case 'SET_MEMBERS':
       return { ...state, members: action.members };
     case 'SET_ATTENDACE':
       return { ...state, attendance: action.attendance };
+    case 'SET_ACTIVE_DATE':
+      return { ...state, activeDate: action.date };
     case 'UPSERT_MEMBER':
       if (action.member.id === '') {
         db.collection('members').add(action.member);
@@ -75,16 +83,16 @@ const reducer = (state: IStore, action: TAction): IStore => {
       return { ...state, members: newMembers };
     case 'UPSERT_CLUBNIGHT_MANAGER':
       db.collection('clubNightManager')
-      .where('clubNight', '==', action.manager.clubNight)
-      .get().then((snapshot) => {
-        if (snapshot.size > 0) {
-          snapshot.docs.forEach((doc) => {
-            db.collection(`clubNightManager`).doc(doc.id).update(action.manager);
-          })
-        } else {
-          db.collection('clubNightManager').add(action.manager);
-        }
-      });
+        .where('clubNight', '==', action.manager.clubNight)
+        .get().then((snapshot) => {
+          if (snapshot.size > 0) {
+            snapshot.docs.forEach((doc) => {
+              db.collection(`clubNightManager`).doc(doc.id).update(action.manager);
+            })
+          } else {
+            db.collection('clubNightManager').add(action.manager);
+          }
+        });
       return state;
     case 'UPSERT_ATTENDANCE':
       db.collection('attendance')
@@ -102,12 +110,6 @@ const reducer = (state: IStore, action: TAction): IStore => {
       return { ...state };
   }
   return state;
-};
-
-const initialState: IStore = {
-  attendance: [],
-  clubNightManagers: [],
-  members: [],
 };
 
 const FirebaseStore: FC = ({ children }) => {
@@ -130,6 +132,7 @@ const FirebaseStore: FC = ({ children }) => {
 
   useEffect(() => {
     (async () => {
+      console.log('get attendance');
       const snapshot = await db.collection('attendance').get();
       const attendance: any[] = [];
       snapshot.forEach((doc) => {
@@ -142,7 +145,7 @@ const FirebaseStore: FC = ({ children }) => {
       });
       dispatch({ type: 'SET_ATTENDACE', attendance });
     })();
-  }, []);
+  }, [state.activeDate]);
 
   useEffect(() => {
     (async () => {

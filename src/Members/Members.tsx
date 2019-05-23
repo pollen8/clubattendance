@@ -9,22 +9,28 @@ import {
   Label,
   Row,
 } from 'fab-ui';
-import React, { useState } from 'react';
+import React, {
+  useEffect,
+  useState,
+} from 'react';
 import {
   MdClose,
   MdDone,
 } from 'react-icons/md';
+import { connect } from 'react-redux';
 import Select from 'react-select';
+import { bindActionCreators } from 'redux';
 import { withTheme } from 'styled-components';
 
-import {DeleteConfirmation} from '../app/components/DeleteModal';
+import { DeleteConfirmation } from '../app/components/DeleteModal';
 import { PageContainer } from '../app/components/PageContainer';
 import {
   Checkbox,
   Table,
 } from '../app/components/Table';
-import { useStateValue } from '../firebase';
+import { IGlobalState } from '../reducers';
 import { theme } from '../theme';
+import * as membersActions from './MembersActions';
 
 export type IMembershipType = '' | 'member' | 'guest';
 export interface IMember {
@@ -49,10 +55,17 @@ interface IProps {
   theme: Partial<typeof theme>;
 }
 
-const Members = ({ theme }: IProps) => {
+type Props = IProps & ReturnType<typeof mapStateToProps>
+  & ReturnType<typeof mapDispatchToProps>;
+
+const Members = ({ theme, getMembers, members, upsertMember, deleteMember }: Props) => {
   const [formData, setFormData] = useState(blankMember);
-  const { state, dispatch } = useStateValue();
-  const { members } = state;
+
+  useEffect(() => {
+    (async () => {
+      await getMembers();
+    })();
+  }, []);
 
   return (
     <PageContainer>
@@ -113,7 +126,7 @@ const Members = ({ theme }: IProps) => {
                     <Button type="button"
                       style={{ float: 'right' }}
                       onClick={() => {
-                        dispatch({ type: 'UPSERT_MEMBER', member: formData });
+                        upsertMember(formData)
                         setFormData(blankMember);
                       }}>
                       {
@@ -154,7 +167,7 @@ const Members = ({ theme }: IProps) => {
                     </thead>
                     <tbody>
                       {
-                        members.map((line, i) => {
+                        members.map((line: IMember, i: number) => {
                           return <tr key={line.id}
 
                             onClick={() => setFormData(line)}>
@@ -170,12 +183,12 @@ const Members = ({ theme }: IProps) => {
                                 : line.paid ? <MdDone color={theme.success500} /> : <MdClose color={theme.danger500} />}
                             </td>
                             <td>
-                          <DeleteConfirmation
-                            onDelete={(e) => {
-                              e.preventDefault();
-                              e.stopPropagation();
-                              dispatch({ type: 'REMOVE_MEMBER', id: line.id });
-                            }} />
+                              <DeleteConfirmation
+                                onDelete={(e) => {
+                                  e.preventDefault();
+                                  e.stopPropagation();
+                                  deleteMember(line.id);
+                                }} />
                             </td>
                           </tr>;
                         })
@@ -191,4 +204,18 @@ const Members = ({ theme }: IProps) => {
   );
 }
 
-export default withTheme(Members);
+const mapStateToProps = (state: IGlobalState) => ({
+  members: state.member.data,
+});
+
+const mapDispatchToProps = (dispatch: any) =>
+  bindActionCreators({
+    deleteMember: membersActions.deleteMember,
+    getMembers: membersActions.getMembers,
+    upsertMember: membersActions.upsertMember,
+  }, dispatch);
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(withTheme(Members));

@@ -7,6 +7,7 @@ import {
 } from 'fab-ui';
 import React, {
   FC,
+  useEffect,
   useState,
 } from 'react';
 import DatePicker from 'react-date-picker';
@@ -14,19 +15,31 @@ import {
   MdClose,
   MdDone,
 } from 'react-icons/md';
+import { connect } from 'react-redux';
 import Select from 'react-select';
-import { withTheme } from 'styled-components';
+import { bindActionCreators } from 'redux';
+import styled, { withTheme } from 'styled-components';
 
 import { PageContainer } from '../app/components/PageContainer';
-import { Checkbox, Table } from '../app/components/Table';
 import {
-  useStateValue,
-} from '../firebase';
-import { blankMember } from '../Members/Members';
+  Checkbox,
+  Table,
+} from '../app/components/Table';
+import {
+  blankMember,
+  IMember,
+} from '../Members/Members';
+import * as membersActions from '../Members/MembersActions';
+import { IGlobalState } from '../reducers';
 import { theme } from '../theme';
+import * as attendanceActions from './AttendanceActions';
 
 // import { SessionAttendance } from './SessionAttendance';
 // import { SessionPayments } from './SessionPayments';
+
+const Tr = styled.tr<{ attended: boolean }>`
+  color: ${({ attended, theme }) => attended ? theme.grey800 : theme.grey500} !important;
+`;
 
 export interface IClubNight {
   createdAt?: Date;
@@ -43,6 +56,7 @@ export interface IAttendance {
 }
 
 const blankForm: IAttendance = {
+  id: '',
   attended: true,
   clubNight: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()).getTime(),
   member: '',
@@ -53,16 +67,26 @@ interface IProps {
   theme: Partial<typeof theme>;
 }
 
+type Props = IProps & ReturnType<typeof mapStateToProps>
+  & ReturnType<typeof mapDispatchToProps>;
 
-const Attendance: FC<IProps> = ({ theme }) => {
+const Attendance: FC<Props> = ({ theme, attendance, getAttendance, members, getMembers,
+  getClubNightManagers, clubNightManagers, upsertAttendance, upsertClubNightManager }) => {
   const [formData, setFormData] = useState<IAttendance>(blankForm);
-  const { state, dispatch } = useStateValue();
-  const { attendance, members, clubNightManagers } = state;
-  const memberOptions = members.map((member) => ({ value: member, label: member.name }));
+  const memberOptions = members.map((member: IMember) => ({ value: member, label: member.name }));
   const m = clubNightManagers.find((manager) => manager.clubNight === formData.clubNight);
   const manager = m === undefined
     ? { value: blankMember, label: '' }
-    : { value: m.member, label: m.member.name }
+    : { value: m.member, label: m.member.name };
+  let attendedTotal = 0;
+
+  useEffect(() => {
+    (async () => {
+      await getAttendance();
+      await getMembers();
+      await getClubNightManagers();
+    })();
+  }, []);
   return (
     <PageContainer>
       <Row>
@@ -78,7 +102,6 @@ const Attendance: FC<IProps> = ({ theme }) => {
                     onChange={(v) => {
                       const date = Array.isArray(v) ? v[0] : v;
                       const clubNight = new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime();
-
                       setFormData({
                         ...formData,
                         clubNight,
@@ -97,12 +120,11 @@ const Attendance: FC<IProps> = ({ theme }) => {
                       if (!v) {
                         return;
                       }
-                      dispatch({
-                        type: 'UPSERT_CLUBNIGHT_MANAGER', manager: {
-                          clubNight: formData.clubNight,
-                          member: v.value,
-                        }
-                      })
+                      upsertClubNightManager({
+                        clubNight: formData.clubNight,
+                        id: m ? m.id : '',
+                        member: v.value,
+                      });
                     }} />
                 </Col>
               </Row>
@@ -116,16 +138,19 @@ const Attendance: FC<IProps> = ({ theme }) => {
                     <th>-</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody>Number
                   {
-                    state.members
-                      .map((member, i) => {
+                    members
+                      .map((member: IMember, i: number) => {
                         // do we have an attendance for the date/member?
-                        const record = attendance.find((row) => {
+                        const record = attendance.find((row: IAttendance) => {
                           return row.member === member.id
                             && row.clubNight === formData.clubNight;
                         });
-                        return <tr key={member.id}>
+                        if (record && record.attended) {
+                          attendedTotal++;
+                        }
+                        return <Tr key={member.id} attended={Boolean(record && record.attended)}>
                           <td>
                             <label htmlFor={`attended-${i}`}>
                               {member.name}
@@ -136,28 +161,30 @@ const Attendance: FC<IProps> = ({ theme }) => {
                           </td>
                           <td>
                             <Checkbox type="checkbox"
-                              defaultChecked={record && record.attended}
+                              checked={record && record.attended}
                               onChange={(e) => {
                                 const attendance: IAttendance = {
                                   ...formData,
                                   attended: e.target.checked,
+                                  id: record ? record.id : '',
                                   member: member.id,
                                 };
-                                dispatch({ type: 'UPSERT_ATTENDANCE', attendance })
+                                upsertAttendance(attendance);
                               }} />
                           </td>
                           <td>
                             {
                               member.membership === 'guest' && <Checkbox
                                 type="checkbox"
-                                defaultChecked={record && record.paid}
+                                checked={record && record.paid}
                                 onChange={(e) => {
                                   const attendance: IAttendance = {
                                     ...formData,
                                     member: member.id,
+                                    id: record ? record.id : '',
                                     paid: e.target.checked,
                                   };
-                                  dispatch({ type: 'UPSERT_ATTENDANCE', attendance })
+                                  upsertAttendance(attendance);
                                 }} />
                             }
                             {
@@ -170,10 +197,19 @@ const Attendance: FC<IProps> = ({ theme }) => {
                               <MdClose color={theme.danger500} />
                             }
                           </td>
-                        </tr>;
+                        </Tr>;
                       })
                   }
                 </tbody>
+                <tfoot>
+                  <tr>
+                    <td></td>
+                    <td></td>
+                    <td>
+                      {attendedTotal}
+                    </td>
+                  </tr>
+                </tfoot>
               </Table>
             </CardBody>
           </Card>
@@ -182,5 +218,22 @@ const Attendance: FC<IProps> = ({ theme }) => {
     </PageContainer>
   );
 };
+const mapStateToProps = (state: IGlobalState) => ({
+  attendance: state.attendance.data,
+  clubNightManagers: state.attendance.clubNightManagers,
+  members: state.member.data,
+});
 
-export default withTheme(Attendance);
+const mapDispatchToProps = (dispatch: any) =>
+  bindActionCreators({
+    getAttendance: attendanceActions.getAttendance,
+    getClubNightManagers: attendanceActions.getClubNightManagers,
+    getMembers: membersActions.getMembers,
+    upsertAttendance: attendanceActions.upsertAttendance,
+    upsertClubNightManager: attendanceActions.upsertClubNightManager,
+  }, dispatch);
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(withTheme(Attendance));
