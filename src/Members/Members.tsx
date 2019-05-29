@@ -10,6 +10,7 @@ import {
   Row,
 } from 'fab-ui';
 import React, {
+  useContext,
   useEffect,
   useState,
 } from 'react';
@@ -22,6 +23,7 @@ import Select from 'react-select';
 import { bindActionCreators } from 'redux';
 import { withTheme } from 'styled-components';
 
+import { UserContext } from '../App';
 import { DeleteConfirmation } from '../app/components/DeleteModal';
 import { PageContainer } from '../app/components/PageContainer';
 import {
@@ -35,6 +37,7 @@ import * as membersActions from './MembersActions';
 export type IMembershipType = '' | 'member' | 'guest';
 export interface IMember {
   createdAt?: Date;
+  createdBy: string;
   id: string;
   name: string;
   membership: IMembershipType;
@@ -44,6 +47,7 @@ export interface IMember {
 }
 
 export const blankMember: IMember = {
+  createdBy: '',
   id: '',
   name: '',
   paid: false,
@@ -59,7 +63,11 @@ type Props = IProps & ReturnType<typeof mapStateToProps>
   & ReturnType<typeof mapDispatchToProps>;
 
 const Members = ({ theme, getMembers, members, upsertMember, deleteMember }: Props) => {
-  const [formData, setFormData] = useState(blankMember);
+  const user = useContext(UserContext);
+  const [formData, setFormData] = useState<IMember>({
+    ...blankMember,
+    createdBy: user !== null ? String(user.email) : '',
+  });
 
   useEffect(() => {
     (async () => {

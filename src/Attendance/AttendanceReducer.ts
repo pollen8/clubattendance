@@ -11,6 +11,7 @@ export interface IAttendanceState {
 
 export interface IManager {
   id: string;
+  createdBy?: string;
   clubNight: number;
   member: IMember;
 }

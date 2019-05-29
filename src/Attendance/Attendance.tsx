@@ -7,6 +7,7 @@ import {
 } from 'fab-ui';
 import React, {
   FC,
+  useContext,
   useEffect,
   useState,
 } from 'react';
@@ -20,6 +21,7 @@ import Select from 'react-select';
 import { bindActionCreators } from 'redux';
 import styled, { withTheme } from 'styled-components';
 
+import { UserContext } from '../App';
 import { PageContainer } from '../app/components/PageContainer';
 import {
   Checkbox,
@@ -39,7 +41,7 @@ import * as attendanceActions from './AttendanceActions';
 
 const Tr = styled.tr<{ attended: boolean, guestNotPaid: boolean }>`
   color: ${({ attended, theme }) => attended ? theme.grey800 : theme.grey500} !important;
-  background: ${({guestNotPaid, theme}) => guestNotPaid ? theme.danger100: 'transparent'};
+  background: ${({ guestNotPaid, theme }) => guestNotPaid ? theme.danger100 : 'transparent'};
 `;
 
 export interface IClubNight {
@@ -47,6 +49,7 @@ export interface IClubNight {
   id: string;
 }
 export interface IAttendance {
+  createdBy?: string;
   attended: boolean;
   createdAt?: Date;
   id?: string;
@@ -82,6 +85,7 @@ const Attendance: FC<Props> = ({ theme, attendance, getAttendance, members, getM
   let attendedTotal = 0;
   let guestFeeTotal = 0;
 
+  const user = useContext(UserContext);
   useEffect(() => {
     (async () => {
       await getAttendance();
@@ -124,6 +128,7 @@ const Attendance: FC<Props> = ({ theme, attendance, getAttendance, members, getM
                       }
                       upsertClubNightManager({
                         clubNight: formData.clubNight,
+                        createdBy: user !== null ? String(user.email) : '',
                         id: m ? m.id : '',
                         member: v.value,
                       });
@@ -155,7 +160,7 @@ const Attendance: FC<Props> = ({ theme, attendance, getAttendance, members, getM
                         if (member.membership === 'guest' && record && record.paid) {
                           guestFeeTotal = guestFeeTotal + 7;
                         }
-                        return <Tr key={member.id} 
+                        return <Tr key={member.id}
                           attended={Boolean(record && record.attended)}
                           guestNotPaid={Boolean(member.membership === 'guest' && record && record.attended && !record.paid)}>
                           <td>
@@ -173,6 +178,7 @@ const Attendance: FC<Props> = ({ theme, attendance, getAttendance, members, getM
                                 const attendance: IAttendance = {
                                   ...formData,
                                   attended: e.target.checked,
+                                  createdBy: user !== null ? String(user.email) : '',
                                   id: record ? record.id : '',
                                   member: member.id,
                                 };
