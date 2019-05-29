@@ -9,6 +9,7 @@ import React, {
   useContext,
 } from 'react';
 import styled from 'styled-components';
+import useMedia from 'use-media';
 
 import { UserContext } from '../../App';
 import { auth } from '../../fire';
@@ -31,21 +32,23 @@ const UserInfo = styled.div`
   align-items: center;
 `;
 
-const Bar = styled.div`
+const Bar = styled.div<{ isWide: boolean }>`
   display: flex;
   justify-content: space-between;
+  flex-direction: ${({ isWide }) => isWide ? 'row' : 'row-reverse'};
   flex-grow: 2;
   margin: 0 0.5rem;
 `;
 
 export const Header: FC<{}> = () => {
   const user = useContext(UserContext);
+  const isWide = useMedia('(min-width: 1000px)');
   return <Container>
     <Row style={{ alignItems: 'center' }}>
       <Col flexGrow={0}>
         <Title>Club Manager</Title>
       </Col>
-      <Bar>
+      <Bar isWide={isWide}>
         {
           user && <Menu />
         }
@@ -54,7 +57,7 @@ export const Header: FC<{}> = () => {
             (user && user.photoURL) && <Avatar src={user.photoURL} />
           }
           {
-            user && <Button outline size="sm" onClick={() => auth.signOut()}>logout</Button>
+            isWide && user && <Button outline size="sm" onClick={() => auth.signOut()}>logout</Button>
           }
         </UserInfo>
       </Bar>

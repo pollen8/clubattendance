@@ -9,6 +9,7 @@ import {
   Popper,
   Reference,
 } from 'react-popper';
+import { auth } from '../../fire';
 import styled from 'styled-components';
 import { useMedia } from 'use-media';
 
@@ -90,6 +91,9 @@ export const Menu: FC<{}> = () => {
                   <Wrapper
                     collapsed={true}>
                     <MenuLinks onClick={() => setDropdownVisible(!dropdownVisible)} />
+                    <li 
+                     onClick={() => auth.signOut()}>logout
+                     </li>
                   </Wrapper>
                 </Card>;
               }
