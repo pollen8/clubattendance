@@ -3,16 +3,17 @@ import React, {
   FC,
   useRef,
 } from 'react';
+import { createPortal } from 'react-dom';
 import { IoMdMenu } from 'react-icons/io';
 import {
   Manager,
   Popper,
   Reference,
 } from 'react-popper';
-import { auth } from '../../fire';
 import styled from 'styled-components';
 import { useMedia } from 'use-media';
 
+import { auth } from '../../fire';
 import { useDropdown } from '../hooks/dropdown';
 import { MenuLinks } from './MenuLinks';
 
@@ -77,28 +78,31 @@ export const Menu: FC<{}> = () => {
                 </a>
               )}
             </Reference>
-            <Popper placement="bottom-start"
-            >
-              {({ ref, style, placement, arrowProps }) => {
-                return <Card ref={ref}
-                  style={{
-                    ...style,
-                    opacity: 1,
-                    display: dropdownVisible ? 'block' : 'none',
-                    zIndex: 100,
-                  }}
-                  data-placement={placement}>
-                  <Wrapper
-                    collapsed={true}>
-                    <MenuLinks onClick={() => setDropdownVisible(!dropdownVisible)} />
-                    <li 
-                     onClick={() => auth.signOut()}>logout
-                     </li>
-                  </Wrapper>
-                </Card>;
-              }
-              }
-            </Popper>
+            {createPortal(
+              <Popper placement="left"
+              >
+                {({ ref, style, placement, arrowProps }) => {
+                  return <Card ref={ref}
+                    style={{
+                      ...style,
+                      opacity: dropdownVisible ? 1 : 0,
+                      zIndex: 100,
+                    }}
+                    data-placement={placement}>
+                    <Wrapper
+                      collapsed={true}>
+                      <MenuLinks onClick={() => setDropdownVisible(!dropdownVisible)} />
+                      <li
+                        onClick={() => auth.signOut()}>logout
+                        </li>
+                    </Wrapper>
+                  </Card>;
+                }
+                }
+              </Popper>,
+              document.querySelector('#destination') as Element,
+            )}
+
           </Manager>
         </Burger>
       }

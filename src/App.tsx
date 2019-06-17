@@ -70,6 +70,7 @@ function App() {
           </UserContext.Provider>
         </ThemeProvider>
       </Router>
+      <div id="destination" />
     </Provider>
   );
 }
