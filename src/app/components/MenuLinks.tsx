@@ -14,6 +14,10 @@ export const MenuLinks: FC<IProps> = ({ onClick }) => {
       <li>
         <NavLink onClick={() => onClick && onClick()} exact to="/members">Members</NavLink>
       </li>
+      {/* <li>
+        <NavLink onClick={() => onClick && onClick()}
+          exact to="/teams">Teams</NavLink>
+      </li> */}
     </>
   );
 }

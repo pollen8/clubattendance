@@ -92,9 +92,11 @@ export const Menu: FC<{}> = () => {
                     <Wrapper
                       collapsed={true}>
                       <MenuLinks onClick={() => setDropdownVisible(!dropdownVisible)} />
-                      <li
-                        onClick={() => auth.signOut()}>logout
-                        </li>
+                      <li>
+                        <a href="#"
+                          onClick={() => auth.signOut()}>logout
+                        </a>
+                      </li>
                     </Wrapper>
                   </Card>;
                 }

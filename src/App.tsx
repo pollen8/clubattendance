@@ -22,6 +22,7 @@ import {
 } from './fire';
 import history from './history';
 import Members from './Members/Members';
+import Teams from './Teams/Teams';
 import { theme } from './theme';
 
 const Background = styled.div`
@@ -63,6 +64,7 @@ function App() {
                   user && <>
                     <Route path="/" exact render={(props: any) => <Attendance {...props} />} />
                     <Route path="/members" render={(props: any) => <Members {...props} />} />
+                    <Route path="/teams" render={(props: any) => <Teams {...props} />} />
                   </>
                 }
               </Background>
