@@ -1,12 +1,8 @@
 import {
   Alert,
-  Button,
   Card,
   CardBody,
   Col,
-  FormGroup,
-  Input,
-  Label,
   Row,
 } from 'fab-ui';
 import React, {
@@ -19,19 +15,16 @@ import {
   MdDone,
 } from 'react-icons/md';
 import { connect } from 'react-redux';
-import Select from 'react-select';
 import { bindActionCreators } from 'redux';
 import { withTheme } from 'styled-components';
 
 import { UserContext } from '../App';
 import { DeleteConfirmation } from '../app/components/DeleteModal';
 import { PageContainer } from '../app/components/PageContainer';
-import {
-  Checkbox,
-  Table,
-} from '../app/components/Table';
+import { Table } from '../app/components/Table';
 import { IGlobalState } from '../reducers';
 import { theme } from '../theme';
+import MemberForm from './components/MemberForm';
 import * as membersActions from './MembersActions';
 
 export type IMembershipType = '' | 'member' | 'guest';
@@ -44,6 +37,7 @@ export interface IMember {
   paid: boolean;
   updatedAt?: Date;
   season?: any;
+  gender?: 'male' | 'female' | 'other';
 }
 
 export const blankMember: IMember = {
@@ -73,7 +67,7 @@ const Members = ({ theme, getMembers, members, upsertMember, deleteMember }: Pro
     (async () => {
       await getMembers();
     })();
-  }, []);
+  }, [getMembers]);
 
   return (
     <PageContainer>
@@ -81,77 +75,10 @@ const Members = ({ theme, getMembers, members, upsertMember, deleteMember }: Pro
         <Col xs={12} md={4}>
           <Card>
             <CardBody>
-              <Row>
-                <Col>
-                  <Label htmlFor="name">Name</Label>
-                  <Input
-                    id="name"
-                    value={formData.name}
-                    onChange={(e) => {
-                      setFormData({ ...formData, name: e.target.value });
-                    }} />
-                </Col>
-              </Row>
-              <Row>
-                <Col>
-                  <Label htmlFor="membership">Membership</Label>
-                  <Select
-                    id="membership"
-                    defaultValue={{ value: 'guest', label: 'guest' }}
-                    value={{ value: formData.membership, label: formData.membership }}
-                    onChange={(v: any) => {
-                      setFormData({
-                        ...formData,
-                        membership: v.value,
-                      })
-                    }}
-                    options={[
-                      { value: 'guest', label: 'guest' },
-                      { value: 'member', label: 'member' },
-                    ]} />
-
-                </Col>
-              </Row>
-              <Row>
-                <Col>
-                  {
-                    formData.membership === 'member' &&
-                    <FormGroup>
-                      <Label>Paid</Label>
-                      <Checkbox type="checkbox"
-                        checked={formData.paid}
-                        onChange={(e) => setFormData({
-                          ...formData,
-                          paid: e.target.checked,
-                        })}
-                      />
-                    </FormGroup>
-
-                  }
-                </Col>
-                <Col>
-                  <div style={{ marginTop: '0.75rem' }}>
-                    <Button type="button"
-                      style={{ float: 'right' }}
-                      onClick={() => {
-                        upsertMember(formData)
-                        setFormData(blankMember);
-                      }}>
-                      {
-                        formData.id === '' ? 'Add' : 'Update'
-                      }
-                    </Button>
-                    {
-                      formData.id !== '' &&
-                      <Button type="button"
-                        style={{ float: 'right' }}
-                        outline
-                        onClick={() => setFormData(blankMember)}
-                      >Clear</Button>
-                    }
-                  </div>
-                </Col>
-              </Row>
+              <MemberForm
+                formData={formData}
+                setFormData={setFormData}
+              />
             </CardBody>
           </Card>
         </Col>

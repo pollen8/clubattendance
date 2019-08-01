@@ -1,5 +1,5 @@
-import styled from 'styled-components';
 import { Input } from 'fab-ui';
+import styled from 'styled-components';
 
 export const Table = styled.table`
 
@@ -32,4 +32,7 @@ border-spacing: 0;
 
 export const Checkbox = styled(Input)`
   margin-left: 0 !important;
+  box-shadow: none;
+  width: auto;
+  height: auto;
 `;
