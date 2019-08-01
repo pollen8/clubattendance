@@ -2,9 +2,11 @@ import {
   Button,
   Card,
   CardBody,
+  Col,
   FormGroup,
   Input,
   Label,
+  Row,
 } from 'fab-ui';
 import React, {
   FC,
@@ -38,6 +40,9 @@ export const blankTeam: ITeam = {
   createdBy: '',
   name: '',
   captain: '',
+  places: 0,
+  placesFemale: 0,
+  placesMale: 0,
 };
 
 type Props = ReturnType<typeof mapStateToProps>
@@ -85,6 +90,36 @@ const TeamForm: FC<Props> = ({
               setFormData({ ...formData, captain: v.value.id });
             }} />
         </FormGroup>
+        <fieldset>
+          <legend>Players</legend>
+          <FormGroup>
+            <Label>Number players</Label>
+            <Input type="number"
+              value={formData.places}
+              onChange={(e) => setFormData({ ...formData, places: Number(e.target.value) })}
+            />
+          </FormGroup>
+          <Row noGutters>
+            <Col>
+              <FormGroup>
+                <Label>Of which must be female players</Label>
+                <Input type="number"
+                  value={formData.placesFemale}
+                  onChange={(e) => setFormData({ ...formData, placesFemale: Number(e.target.value) })}
+                />
+              </FormGroup>
+            </Col>
+            <Col>
+              <FormGroup>
+                <Label>Of which must be male players</Label>
+                <Input type="number"
+                  value={formData.placesMale}
+                  onChange={(e) => setFormData({ ...formData, placesMale: Number(e.target.value) })}
+                />
+              </FormGroup>
+            </Col>
+          </Row>
+        </fieldset>
         <div style={{ marginTop: '0.75rem', marginBottom: '3rem' }}>
           <Button type="button"
             style={{ float: 'right' }}
@@ -106,7 +141,7 @@ const TeamForm: FC<Props> = ({
           }
         </div>
       </CardBody>
-    </Card>
+    </Card >
   )
 }
 

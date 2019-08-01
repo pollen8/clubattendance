@@ -26,7 +26,10 @@ export interface ITeam {
   id: string;
   createdBy: string;
   name: string;
-  captain: string; 
+  captain: string;
+  places: number; 
+  placesMale: number;
+  placesFemale: number;
 }
 
 const mapStateToProps = (state: IGlobalState) => ({

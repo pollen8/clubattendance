@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "babel-preset-react-app": "^7.0.0",
-    "fab-ui": "^1.0.7",
+    "fab-ui": "^1.0.9",
     "firebase": "^6.3.3",
     "immer": "^3.1.3",
     "react": "^16.8.6",

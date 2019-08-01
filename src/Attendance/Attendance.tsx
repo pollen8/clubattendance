@@ -2,7 +2,6 @@ import {
   Card,
   CardBody,
   Col,
-  Label,
   Row,
 } from 'fab-ui';
 import React, {
@@ -11,7 +10,6 @@ import React, {
   useEffect,
   useState,
 } from 'react';
-import DatePicker from 'react-date-picker';
 import {
   MdClose,
   MdDone,

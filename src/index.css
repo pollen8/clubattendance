@@ -11,3 +11,15 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+fieldset {
+  border-color: rgb(190, 190, 221);
+  border-block-color: rgb(190, 190, 221);
+  border-width: 1px 0 0 0;
+}
+
+legend {
+  text-transform: uppercase;
+  color: '#333';
+  border-block-color: rgb(190, 190, 221);
+}
