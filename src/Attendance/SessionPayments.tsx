@@ -13,6 +13,12 @@ interface IProps {
   clubNight: number;
 }
 
+const mapStateToProps = (state: IGlobalState) => ({
+  attendance: state.attendance.data,
+  members: state.member.data,
+});
+
+
 type Props = IProps & ReturnType<typeof mapStateToProps>;
 
 const StatsCard = styled(Card)`
@@ -48,12 +54,6 @@ export const SessionPayments: FC<Props> = ({ attendance, members }) => {
     </StatsCard>
   )
 }
-
-const mapStateToProps = (state: IGlobalState) => ({
-  attendance: state.attendance.data,
-  members: state.member.data,
-});
-
 
 export default connect(
   mapStateToProps,

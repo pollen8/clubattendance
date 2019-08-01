@@ -13,7 +13,6 @@ import React, {
 } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import styled from 'styled-components';
 
 import { UserContext } from '../App';
 import { DeleteConfirmation } from '../app/components/DeleteModal';
@@ -27,8 +26,8 @@ export interface ITeam {
   id: string;
   createdBy: string;
   name: string;
+  captain: string; 
 }
-
 
 const mapStateToProps = (state: IGlobalState) => ({
   teams: state.team.data,

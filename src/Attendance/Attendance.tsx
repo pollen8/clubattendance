@@ -17,7 +17,6 @@ import {
   MdDone,
 } from 'react-icons/md';
 import { connect } from 'react-redux';
-import Select from 'react-select';
 import { bindActionCreators } from 'redux';
 import styled, { withTheme } from 'styled-components';
 
@@ -27,17 +26,25 @@ import {
   Checkbox,
   Table,
 } from '../app/components/Table';
-import {
-  blankMember,
-  IMember,
-} from '../Members/Members';
+import { IMember } from '../Members/Members';
 import * as membersActions from '../Members/MembersActions';
 import { IGlobalState } from '../reducers';
 import { theme } from '../theme';
 import * as attendanceActions from './AttendanceActions';
+import AttendanceForm from './components/AttendanceForm';
 
-// import { SessionAttendance } from './SessionAttendance';
-// import { SessionPayments } from './SessionPayments';
+const mapStateToProps = (state: IGlobalState) => ({
+  attendance: state.attendance.data,
+  members: state.member.data,
+});
+
+const mapDispatchToProps = (dispatch: any) =>
+  bindActionCreators({
+    getAttendance: attendanceActions.getAttendance,
+    getClubNightManagers: attendanceActions.getClubNightManagers,
+    getMembers: membersActions.getMembers,
+    upsertAttendance: attendanceActions.upsertAttendance,
+  }, dispatch);
 
 const Tr = styled.tr<{ attended: boolean, guestNotPaid: boolean }>`
   color: ${({ attended, theme }) => attended ? theme.grey800 : theme.grey500} !important;
@@ -74,14 +81,17 @@ interface IProps {
 type Props = IProps & ReturnType<typeof mapStateToProps>
   & ReturnType<typeof mapDispatchToProps>;
 
-const Attendance: FC<Props> = ({ theme, attendance, getAttendance, members, getMembers,
-  getClubNightManagers, clubNightManagers, upsertAttendance, upsertClubNightManager }) => {
+const Attendance: FC<Props> = ({
+  theme,
+  attendance,
+  getAttendance,
+  members,
+  getMembers,
+  getClubNightManagers,
+  upsertAttendance,
+}) => {
   const [formData, setFormData] = useState<IAttendance>(blankForm);
-  const memberOptions = members.map((member: IMember) => ({ value: member, label: member.name }));
-  const m = clubNightManagers.find((manager) => manager.clubNight === formData.clubNight);
-  const manager = m === undefined
-    ? { value: blankMember, label: '' }
-    : { value: m.member, label: m.member.name };
+
   let attendedTotal = 0;
   let guestFeeTotal = 0;
 
@@ -99,42 +109,10 @@ const Attendance: FC<Props> = ({ theme, attendance, getAttendance, members, getM
         <Col xs={12} md={12}>
           <Card>
             <CardBody>
-              <Row>
-                <Col>
-                  <Label>Club night</Label>
-                  <DatePicker
-                    clearIcon={null}
-                    value={new Date(formData.clubNight)}
-                    onChange={(v) => {
-                      const date = Array.isArray(v) ? v[0] : v;
-                      const clubNight = new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime();
-                      setFormData({
-                        ...formData,
-                        clubNight,
-                      });
-                    }}
-
-                    returnValue="start"
-                  />
-                </Col>
-                <Col>
-                  <Label>Manager</Label>
-                  <Select
-                    options={memberOptions}
-                    value={manager}
-                    onChange={(v: any) => {
-                      if (!v) {
-                        return;
-                      }
-                      upsertClubNightManager({
-                        clubNight: formData.clubNight,
-                        createdBy: user !== null ? String(user.email) : '',
-                        id: m ? m.id : '',
-                        member: v.value,
-                      });
-                    }} />
-                </Col>
-              </Row>
+              <AttendanceForm
+                formData={formData}
+                setFormData={setFormData}
+              />
               <Table style={{ width: '100%' }}>
                 <thead>
                   <tr>
@@ -234,20 +212,7 @@ const Attendance: FC<Props> = ({ theme, attendance, getAttendance, members, getM
     </PageContainer>
   );
 };
-const mapStateToProps = (state: IGlobalState) => ({
-  attendance: state.attendance.data,
-  clubNightManagers: state.attendance.clubNightManagers,
-  members: state.member.data,
-});
 
-const mapDispatchToProps = (dispatch: any) =>
-  bindActionCreators({
-    getAttendance: attendanceActions.getAttendance,
-    getClubNightManagers: attendanceActions.getClubNightManagers,
-    getMembers: membersActions.getMembers,
-    upsertAttendance: attendanceActions.upsertAttendance,
-    upsertClubNightManager: attendanceActions.upsertClubNightManager,
-  }, dispatch);
 
 export default connect(
   mapStateToProps,

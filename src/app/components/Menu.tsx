@@ -1,4 +1,7 @@
-import { Card } from 'fab-ui';
+import {
+  Button,
+  Card,
+} from 'fab-ui';
 import React, {
   FC,
   useRef,
@@ -69,13 +72,14 @@ export const Menu: FC<{}> = () => {
           <Manager>
             <Reference>
               {({ ref }) => (
-                <a href="#"
+                <Button
+                  text
                   ref={ref}
                   onClick={() => {
                     setDropdownVisible(!dropdownVisible);
                   }}>
                   <IoMdMenu size="2rem" />
-                </a>
+                </Button>
               )}
             </Reference>
             {createPortal(
@@ -93,9 +97,10 @@ export const Menu: FC<{}> = () => {
                       collapsed={true}>
                       <MenuLinks onClick={() => setDropdownVisible(!dropdownVisible)} />
                       <li>
-                        <a href="#"
+                        <Button
+                          text
                           onClick={() => auth.signOut()}>logout
-                        </a>
+                        </Button>
                       </li>
                     </Wrapper>
                   </Card>;
