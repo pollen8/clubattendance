@@ -16,6 +16,7 @@ import styled, { ThemeProvider } from 'styled-components';
 import { Header } from './app/components/Header';
 import store from './app/store';
 import Attendance from './Attendance/Attendance';
+import Clubs from './Clubs/Clubs';
 import {
   auth,
   uiConfig,
@@ -65,6 +66,7 @@ function App() {
                     <Route path="/" exact render={(props: any) => <Attendance {...props} />} />
                     <Route path="/members" render={(props: any) => <Members {...props} />} />
                     <Route path="/teams" render={(props: any) => <Teams {...props} />} />
+                    <Route path="/clubs" render={(props: any) => <Clubs {...props} />} />
                   </>
                 }
               </Background>

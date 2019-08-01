@@ -2,6 +2,7 @@ import { ThunkAction } from 'redux-thunk';
 
 import { IAttendance } from '../Attendance/Attendance';
 import { IManager } from '../Attendance/AttendanceReducer';
+import { IClub } from '../Clubs/Clubs';
 import { IMember } from '../Members/Members';
 import { ITeam } from '../Teams/Teams';
 
@@ -22,3 +23,7 @@ export type Action =
   | { type: 'ADD_TEAM', team: ITeam; }
   | { type: 'SET_TEAM', team: ITeam; }
   | { type: 'DELETE_TEAM', id: string; }
+  | { type: 'SET_CLUBS', data: IClub[]; }
+  | { type: 'ADD_CLUB', club: IClub; }
+  | { type: 'SET_CLUB', club: IClub; }
+  | { type: 'DELETE_CLUB', id: string; }
