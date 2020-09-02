@@ -1,3 +1,4 @@
+
 import React, {
   FC,
   useContext,
@@ -17,42 +18,62 @@ import { UserContext } from '../App';
 import { DeleteConfirmation } from '../app/components/DeleteModal';
 import { PageContainer } from '../app/components/PageContainer';
 import { Table } from '../app/components/Table';
+import { IMember } from '../Members/Members';
 import { IGlobalState } from '../reducers';
-import * as clubActions from './ClubActions';
-import ClubForm, { blankClub } from './components/ClubForm';
+import { ITeam } from '../Teams/Teams';
+import { ISet } from './components/GameScore';
+import TeamForm, { blankMatch } from './components/MatchForm';
+import * as matchActions from './MatchActions';
 
-export interface IClub {
-  id: string;
-  createdBy: string;
-  name: string;
-  teams: string[];
+interface IResult {
+  pair: IMember[];
+  result: {
+    0: ISet[];
+    1: ISet[];
+    2: ISet[];
+  }
 }
 
+export interface IMatch {
+  id: string;
+  captain: string;
+  createdBy: string;
+  date: number,
+  opponent?: string;
+  team?: ITeam;
+  players: Array<{
+    player?: IMember;
+    paid: boolean;
+    direct: boolean;
+  }>,
+  results: IResult[];
+};
+
 const mapStateToProps = (state: IGlobalState) => ({
-  clubs: state.club.data,
+  matches: state.match.data,
 });
 
 const mapDispatchToProps = (dispatch: any) =>
   bindActionCreators({
-    deleteClub: clubActions.deleteClub,
-    getClubs: clubActions.getClubs,
+    deleteMatch: matchActions.deleteMatch,
+    getMatches: matchActions.getMatches,
   }, dispatch);
 
 type Props = ReturnType<typeof mapDispatchToProps>
   & ReturnType<typeof mapStateToProps>;
 
-const Teams: FC<Props> = ({ getClubs, clubs, deleteClub }) => {
+const Matches: FC<Props> = ({ getMatches, matches, deleteMatch }) => {
 
   useEffect(() => {
     (async () => {
-      await getClubs();
+      await getMatches();
     })();
-  }, [getClubs]);
+  }, [getMatches]);
 
   const user = useContext(UserContext);
 
-  const [selectedClub, setFormData] = useState<IClub>({
-    ...blankClub,
+  const [selectedTeam, setFormData] = useState<IMatch>({
+    ...blankMatch,
     createdBy: user !== null ? String(user.email) : '',
   });
 
@@ -61,39 +82,47 @@ const Teams: FC<Props> = ({ getClubs, clubs, deleteClub }) => {
     <PageContainer>
       <Row>
         <Col>
-          <ClubForm initialData={selectedClub} />
+          <TeamForm initialData={selectedTeam} />
         </Col>
         <Col>
           <Card>
             <CardBody>
               {
-                clubs.length === 0 ?
+                matches.length === 0 ?
                   <Alert color="info">
-                    Please add a club
+                    Please add a match
                 </Alert>
                   :
                   <Table style={{ width: '100%' }}>
                     <thead>
                       <tr>
-                        <th>Name</th>
+                        <th>Date</th>
+                        <th>Team</th>
+                        <th>Opponent</th>
                         <th></th>
                       </tr>
                     </thead>
                     <tbody>
                       {
-                        clubs.map((line, i) => {
+                        matches.map((line, i) => {
                           return <tr key={line.id}
 
                             onClick={() => setFormData(line)}>
                             <td>
-                              {line.name}
+                              {new Date(line.date).toLocaleDateString()}
+                            </td>
+                            <td>
+                              {line.team && line.team.name}
+                            </td>
+                            <td>
+                              {line.opponent && line.opponent}
                             </td>
                             <td>
                               <DeleteConfirmation
                                 onDelete={(e) => {
                                   e.preventDefault();
                                   e.stopPropagation();
-                                  deleteClub(line.id);
+                                  deleteMatch(line.id);
                                 }} />
                             </td>
                           </tr>;
@@ -114,4 +143,4 @@ const Teams: FC<Props> = ({ getClubs, clubs, deleteClub }) => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
-)(Teams);
+)(Matches);

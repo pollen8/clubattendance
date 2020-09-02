@@ -2,12 +2,14 @@ import { combineReducers } from 'redux';
 
 import attendance, { IAttendanceState } from './Attendance/AttendanceReducer';
 import club, { IClubState } from './Clubs/ClubReducer';
+import match, { IMatchState } from './Matches/MatchReducer';
 import member, { IMemberState } from './Members/MemberReducer';
 import team, { ITeamState } from './Teams/TeamReducer';
 
 export interface IGlobalState {
   readonly attendance: IAttendanceState;
   readonly club: IClubState;
+  readonly match: IMatchState,
   readonly member: IMemberState,
   readonly team: ITeamState,
 }
@@ -15,6 +17,7 @@ export interface IGlobalState {
 const rootReducer = combineReducers({
   attendance,
   club,
+  match,
   member,
   team,
 });

@@ -1,10 +1,3 @@
-import {
-  Alert,
-  Card,
-  CardBody,
-  Col,
-  Row,
-} from 'fab-ui';
 import React, {
   useContext,
   useEffect,
@@ -17,6 +10,12 @@ import {
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { withTheme } from 'styled-components';
+
+import Alert from '@bit/pollen8.fab-ui.alert';
+import Card from '@bit/pollen8.fab-ui.card';
+import CardBody from '@bit/pollen8.fab-ui.card-body';
+import Col from '@bit/pollen8.fab-ui.col';
+import Row from '@bit/pollen8.fab-ui.row';
 
 import { UserContext } from '../App';
 import { DeleteConfirmation } from '../app/components/DeleteModal';
@@ -38,6 +37,7 @@ export interface IMember {
   updatedAt?: Date;
   season?: any;
   gender?: 'male' | 'female' | 'other';
+  tel?: string;
 }
 
 export const blankMember: IMember = {
@@ -71,9 +71,9 @@ const Members = ({ theme, getMembers, members, upsertMember, deleteMember }: Pro
 
   return (
     <PageContainer>
-      <Row>
-        <Col xs={12} md={4}>
-          <Card>
+      <Row className="row">
+        <Col xs={12} md={4} className="col">
+          <Card className="card">
             <CardBody>
               <MemberForm
                 formData={formData}
@@ -105,7 +105,10 @@ const Members = ({ theme, getMembers, members, upsertMember, deleteMember }: Pro
                         members.map((line: IMember, i: number) => {
                           return <tr key={line.id}
 
-                            onClick={() => setFormData(line)}>
+                            onClick={() => setFormData({
+                              tel: '',
+                              ...line
+                            })}>
                             <td>
                               {line.name}
                             </td>

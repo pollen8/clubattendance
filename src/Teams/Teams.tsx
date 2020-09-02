@@ -1,10 +1,3 @@
-import {
-  Alert,
-  Card,
-  CardBody,
-  Col,
-  Row,
-} from 'fab-ui';
 import React, {
   FC,
   useContext,
@@ -13,6 +6,12 @@ import React, {
 } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+
+import Alert from '@bit/pollen8.fab-ui.alert';
+import Card from '@bit/pollen8.fab-ui.card';
+import CardBody from '@bit/pollen8.fab-ui.card-body';
+import Col from '@bit/pollen8.fab-ui.col';
+import Row from '@bit/pollen8.fab-ui.row';
 
 import { UserContext } from '../App';
 import { DeleteConfirmation } from '../app/components/DeleteModal';
@@ -27,7 +26,7 @@ export interface ITeam {
   createdBy: string;
   name: string;
   captain: string;
-  places: number; 
+  places: number;
   placesMale: number;
   placesFemale: number;
 }
@@ -51,7 +50,7 @@ const Teams: FC<Props> = ({ getTeams, teams, deleteTeam }) => {
     (async () => {
       await getTeams();
     })();
-  }, []);
+  }, [getTeams]);
 
   const user = useContext(UserContext);
 

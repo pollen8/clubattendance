@@ -1,15 +1,14 @@
-import {
-  Button,
-  Col,
-  FormGroup,
-  Input,
-  Label,
-  Row,
-} from 'fab-ui';
 import React, { FC } from 'react';
 import { connect } from 'react-redux';
 import Select from 'react-select';
 import { bindActionCreators } from 'redux';
+
+import Button from '@bit/pollen8.fab-ui.button';
+import Col from '@bit/pollen8.fab-ui.col';
+import FormGroup from '@bit/pollen8.fab-ui.form-group';
+import Input from '@bit/pollen8.fab-ui.input';
+import Label from '@bit/pollen8.fab-ui.label';
+import Row from '@bit/pollen8.fab-ui.row';
 
 import { Checkbox } from '../../app/components/Table';
 import { IGlobalState } from '../../reducers';
@@ -55,6 +54,18 @@ const MemberForm: FC<Props> = ({
             value={formData.name}
             onChange={(e) => {
               setFormData({ ...formData, name: e.target.value });
+            }} />
+        </Col>
+      </Row>
+      <Row>
+        <Col>
+          <Label htmlFor="tel">Tel
+        </Label>
+          <Input
+            id="tel"
+            value={formData.tel}
+            onChange={(e) => {
+              setFormData({ ...formData, tel: e.target.value });
             }} />
         </Col>
       </Row>

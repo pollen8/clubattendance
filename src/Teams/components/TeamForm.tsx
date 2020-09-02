@@ -1,13 +1,3 @@
-import {
-  Button,
-  Card,
-  CardBody,
-  Col,
-  FormGroup,
-  Input,
-  Label,
-  Row,
-} from 'fab-ui';
 import React, {
   FC,
   useEffect,
@@ -16,6 +6,15 @@ import React, {
 import { connect } from 'react-redux';
 import Select from 'react-select';
 import { bindActionCreators } from 'redux';
+
+import Button from '@bit/pollen8.fab-ui.button';
+import Card from '@bit/pollen8.fab-ui.card';
+import CardBody from '@bit/pollen8.fab-ui.card-body';
+import Col from '@bit/pollen8.fab-ui.col';
+import FormGroup from '@bit/pollen8.fab-ui.form-group';
+import Input from '@bit/pollen8.fab-ui.input';
+import Label from '@bit/pollen8.fab-ui.label';
+import Row from '@bit/pollen8.fab-ui.row';
 
 import * as membersActions from '../../Members/MembersActions';
 import { memberOptions } from '../../Members/selectors/memberOptions';

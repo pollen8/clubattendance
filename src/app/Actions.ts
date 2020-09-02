@@ -5,6 +5,7 @@ import { IManager } from '../Attendance/AttendanceReducer';
 import { IClub } from '../Clubs/Clubs';
 import { IMember } from '../Members/Members';
 import { ITeam } from '../Teams/Teams';
+import { IMatch } from '../Matches/Matches';
 
 export declare type ThunkResult<A extends Action = any, S = {}, R = void> = ThunkAction<Promise<R>, S, undefined, A>;
 
@@ -27,3 +28,7 @@ export type Action =
   | { type: 'ADD_CLUB', club: IClub; }
   | { type: 'SET_CLUB', club: IClub; }
   | { type: 'DELETE_CLUB', id: string; }
+  | { type: 'SET_MATCHES', data: IMatch[]; }
+  | { type: 'ADD_MATCH', match: IMatch; }
+  | { type: 'SET_MATCH', match: IMatch; }
+  | { type: 'DELETE_MATCH', id: string; }

@@ -1,15 +1,14 @@
-import {
-  Button,
-  Col,
-  Container,
-  Row,
-} from 'fab-ui';
 import React, {
   FC,
   useContext,
 } from 'react';
 import styled from 'styled-components';
 import useMedia from 'use-media';
+
+import Button from '@bit/pollen8.fab-ui.button';
+import Col from '@bit/pollen8.fab-ui.col';
+import Container from '@bit/pollen8.fab-ui.container';
+import Row from '@bit/pollen8.fab-ui.row';
 
 import { UserContext } from '../../App';
 import { auth } from '../../fire';
@@ -40,7 +39,7 @@ const Bar = styled.div<{ isWide: boolean }>`
   margin: 0 0.5rem;
 `;
 
-export const Header: FC<{}> = () => {
+export const Header: FC = () => {
   const user = useContext(UserContext);
   const isWide = useMedia('(min-width: 1000px)');
   return <Container>

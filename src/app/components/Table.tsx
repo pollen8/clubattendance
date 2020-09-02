@@ -1,5 +1,7 @@
-import { Input } from 'fab-ui';
+
 import styled from 'styled-components';
+
+import Input from '@bit/pollen8.fab-ui.input';
 
 export const Table = styled.table`
 

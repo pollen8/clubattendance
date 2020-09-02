@@ -1,10 +1,8 @@
-import {
-  Button,
-  Card,
-} from 'fab-ui';
+
 import React, {
   FC,
   useRef,
+  useState,
 } from 'react';
 import { createPortal } from 'react-dom';
 import { IoMdMenu } from 'react-icons/io';
@@ -16,9 +14,25 @@ import {
 import styled from 'styled-components';
 import { useMedia } from 'use-media';
 
+import Button from '@bit/pollen8.fab-ui.button';
+import Card from '@bit/pollen8.fab-ui.card';
+
 import { auth } from '../../fire';
-import { useDropdown } from '../hooks/dropdown';
 import { MenuLinks } from './MenuLinks';
+
+const useClickOutside = (ref: any, callback: any) => {
+  const handleClick = (e: any) => {
+    if (ref.current && !ref.current.contains(e.target)) {
+      callback();
+    }
+  };
+  React.useEffect(() => {
+    document.addEventListener('click', handleClick);
+    return () => {
+      document.removeEventListener('click', handleClick);
+    };
+  });
+};
 
 const Wrapper = styled.ul<{ collapsed?: boolean }>`
   padding: 0;
@@ -60,9 +74,10 @@ const Burger = styled.div`
 `;
 
 
-export const Menu: FC<{}> = () => {
+export const Menu: FC = () => {
   const circleRef = useRef(null);
-  const [dropdownVisible, setDropdownVisible] = useDropdown(circleRef);
+  const [dropdownVisible, setDropdownVisible] = useState(false);
+  useClickOutside(circleRef, () => setDropdownVisible(false));
   const isWide = useMedia('(min-width: 1000px)');
   return (
     <>
@@ -73,7 +88,7 @@ export const Menu: FC<{}> = () => {
             <Reference>
               {({ ref }) => (
                 <Button
-                  text
+                  outline
                   ref={ref}
                   onClick={() => {
                     setDropdownVisible(!dropdownVisible);
@@ -98,7 +113,7 @@ export const Menu: FC<{}> = () => {
                       <MenuLinks onClick={() => setDropdownVisible(!dropdownVisible)} />
                       <li>
                         <Button
-                          text
+                          outline
                           onClick={() => auth.signOut()}>logout
                         </Button>
                       </li>

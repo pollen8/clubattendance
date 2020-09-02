@@ -1,10 +1,8 @@
-import {
-  Card,
-  CardBody,
-} from 'fab-ui';
 import React, { FC } from 'react';
 import { Spring } from 'react-spring/renderprops';
 import styled from 'styled-components';
+
+import Card from '@bit/pollen8.fab-ui.card';
 
 import { IAttendance } from './Attendance';
 

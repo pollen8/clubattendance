@@ -1,9 +1,3 @@
-import {
-  Card,
-  CardBody,
-  Col,
-  Row,
-} from 'fab-ui';
 import React, {
   FC,
   useContext,
@@ -17,6 +11,11 @@ import {
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled, { withTheme } from 'styled-components';
+
+import Card from '@bit/pollen8.fab-ui.card';
+import CardBody from '@bit/pollen8.fab-ui.card-body';
+import Col from '@bit/pollen8.fab-ui.col';
+import Row from '@bit/pollen8.fab-ui.row';
 
 import { UserContext } from '../App';
 import { PageContainer } from '../app/components/PageContainer';
@@ -100,7 +99,7 @@ const Attendance: FC<Props> = ({
       await getMembers();
       await getClubNightManagers();
     })();
-  }, []);
+  }, [getAttendance, getClubNightManagers, getMembers]);
   return (
     <PageContainer>
       <Row>

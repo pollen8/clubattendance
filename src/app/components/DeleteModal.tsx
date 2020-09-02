@@ -3,17 +3,16 @@ import React, {
   useState,
 } from 'react';
 import { IoMdTrash } from 'react-icons/io';
+import Modal from 'react-responsive-modal';
 
-import {
-  Button,
-  Modal,
-  ModalBody,
-  ModalFooter,
-} from 'fab-ui';
- 
+import Button from '@bit/pollen8.fab-ui.button';
+import ModalBody from '@bit/pollen8.fab-ui.modal-body';
+import ModalFooter from '@bit/pollen8.fab-ui.modal-footer';
+
 interface IProps {
   onDelete: (e: any) => void;
 }
+
 export const DeleteConfirmation: FC<IProps> = ({ onDelete }) => {
   const [open, onToggle] = useState(false);
   return (

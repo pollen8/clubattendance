@@ -1,8 +1,3 @@
-import {
-  Col,
-  Label,
-  Row,
-} from 'fab-ui';
 import React, {
   FC,
   useContext,
@@ -11,6 +6,10 @@ import DatePicker from 'react-date-picker';
 import { connect } from 'react-redux';
 import Select from 'react-select';
 import { bindActionCreators } from 'redux';
+
+import Col from '@bit/pollen8.fab-ui.col';
+import Label from '@bit/pollen8.fab-ui.label';
+import Row from '@bit/pollen8.fab-ui.row';
 
 import { UserContext } from '../../App';
 import { blankMember } from '../../Members/Members';

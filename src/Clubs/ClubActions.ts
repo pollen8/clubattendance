@@ -56,8 +56,37 @@ const deleteClub = (id: string): ThunkResult<Action, IGlobalState, void> => {
   };
 };
 
+const deleteClubTeam = (club: IClub, team: string): ThunkResult<Action, IGlobalState, void> => {
+  club.teams = club.teams.filter((t) => t !== team);
+  return async (dispatch) => {
+    try {
+      await db.collection(`clubs`).doc(club.id).update(club);
+      dispatch({ type: 'SET_CLUB', club });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+};
+
+const addClubTeam = (club: IClub, team: string): ThunkResult<Action, IGlobalState, void> => {
+  if (!club.teams) {
+    club.teams = [];
+  }
+  club.teams.push(team);
+  return async (dispatch) => {
+    try {
+      await db.collection(`clubs`).doc(club.id).update(club);
+      dispatch({ type: 'SET_CLUB', club });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+};
+
 export {
+  addClubTeam,
   deleteClub,
+  deleteClubTeam,
   getClubs,
   upsertClub,
 }

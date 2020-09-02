@@ -22,6 +22,7 @@ import {
   uiConfig,
 } from './fire';
 import history from './history';
+import Matches from './Matches/Matches';
 import Members from './Members/Members';
 import Teams from './Teams/Teams';
 import { theme } from './theme';
@@ -54,19 +55,22 @@ function App() {
           <UserContext.Provider value={user}>
             <div>
               <Header />
-              <Background>
-                <div className="App">
-                  {
-                    !user &&
+              <Background className="background">
+
+                {
+                  !user &&
+                  <div className="app-auth">
                     <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={auth} />
-                  }
-                </div>
+                  </div>
+                }
+
                 {
                   user && <>
                     <Route path="/" exact render={(props: any) => <Attendance {...props} />} />
                     <Route path="/members" render={(props: any) => <Members {...props} />} />
                     <Route path="/teams" render={(props: any) => <Teams {...props} />} />
                     <Route path="/clubs" render={(props: any) => <Clubs {...props} />} />
+                    <Route path="/matches" render={(props: any) => <Matches {...props} />} />
                   </>
                 }
               </Background>
