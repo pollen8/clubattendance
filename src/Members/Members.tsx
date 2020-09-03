@@ -15,12 +15,15 @@ import Alert from '@bit/pollen8.fab-ui.alert';
 import Card from '@bit/pollen8.fab-ui.card';
 import CardBody from '@bit/pollen8.fab-ui.card-body';
 import Col from '@bit/pollen8.fab-ui.col';
+import FormGroup from '@bit/pollen8.fab-ui.form-group';
+import Input from '@bit/pollen8.fab-ui.input';
 import Row from '@bit/pollen8.fab-ui.row';
 
 import { UserContext } from '../App';
 import { DeleteConfirmation } from '../app/components/DeleteModal';
 import { PageContainer } from '../app/components/PageContainer';
 import { Table } from '../app/components/Table';
+import { useDebounce } from '../app/hooks/useDebounce';
 import { IGlobalState } from '../reducers';
 import { theme } from '../theme';
 import MemberForm from './components/MemberForm';
@@ -63,6 +66,18 @@ const Members = ({ theme, getMembers, members, upsertMember, deleteMember }: Pro
     createdBy: user !== null ? String(user.email) : '',
   });
 
+  const [search, setSearch] = useState('');
+  const debouncedSearchTerm = useDebounce(search, 300);
+  const [data, setData] = useState(members);
+
+  useEffect(() => {
+    if (debouncedSearchTerm === '') {
+      setData(members);
+    } else {
+      setData(members.filter((member) => member.name.match(new RegExp(debouncedSearchTerm, 'i'))))
+    }
+
+  }, [debouncedSearchTerm, members]);
   useEffect(() => {
     (async () => {
       await getMembers();
@@ -91,48 +106,53 @@ const Members = ({ theme, getMembers, members, upsertMember, deleteMember }: Pro
                     Please add a member
                 </Alert>
                   :
-                  <Table style={{ width: '100%' }}>
-                    <thead>
-                      <tr>
-                        <th>Name</th>
-                        <th>Membership</th>
-                        <th>Paid</th>
-                        <th></th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {
-                        members.map((line: IMember, i: number) => {
-                          return <tr key={line.id}
+                  <>
+                    <FormGroup>
+                      <Input name="search" onChange={(e: any) => setSearch(e.target.value)} placeholder="search..." />
+                    </FormGroup>
+                    <Table style={{ width: '100%' }}>
+                      <thead>
+                        <tr>
+                          <th>Name</th>
+                          <th>Membership</th>
+                          <th>Paid</th>
+                          <th></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {
+                          data.map((line: IMember, i: number) => {
+                            return <tr key={line.id}
 
-                            onClick={() => setFormData({
-                              tel: '',
-                              ...line
-                            })}>
-                            <td>
-                              {line.name}
-                            </td>
-                            <td>
-                              {line.membership}
-                            </td>
-                            <td>
-                              {line.membership === 'guest'
-                                ? '-'
-                                : line.paid ? <MdDone color={theme.success500} /> : <MdClose color={theme.danger500} />}
-                            </td>
-                            <td>
-                              <DeleteConfirmation
-                                onDelete={(e) => {
-                                  e.preventDefault();
-                                  e.stopPropagation();
-                                  deleteMember(line.id);
-                                }} />
-                            </td>
-                          </tr>;
-                        })
-                      }
-                    </tbody>
-                  </Table>
+                              onClick={() => setFormData({
+                                tel: '',
+                                ...line
+                              })}>
+                              <td>
+                                {line.name}
+                              </td>
+                              <td>
+                                {line.membership}
+                              </td>
+                              <td>
+                                {line.membership === 'guest'
+                                  ? '-'
+                                  : line.paid ? <MdDone color={theme.success500} /> : <MdClose color={theme.danger500} />}
+                              </td>
+                              <td>
+                                <DeleteConfirmation
+                                  onDelete={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    deleteMember(line.id);
+                                  }} />
+                              </td>
+                            </tr>;
+                          })
+                        }
+                      </tbody>
+                    </Table>
+                  </>
               }
             </CardBody>
           </Card>

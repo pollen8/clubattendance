@@ -15,6 +15,8 @@ import styled, { withTheme } from 'styled-components';
 import Card from '@bit/pollen8.fab-ui.card';
 import CardBody from '@bit/pollen8.fab-ui.card-body';
 import Col from '@bit/pollen8.fab-ui.col';
+import FormGroup from '@bit/pollen8.fab-ui.form-group';
+import Input from '@bit/pollen8.fab-ui.input';
 import Row from '@bit/pollen8.fab-ui.row';
 
 import { UserContext } from '../App';
@@ -23,6 +25,7 @@ import {
   Checkbox,
   Table,
 } from '../app/components/Table';
+import { useDebounce } from '../app/hooks/useDebounce';
 import { IMember } from '../Members/Members';
 import * as membersActions from '../Members/MembersActions';
 import { IGlobalState } from '../reducers';
@@ -92,6 +95,19 @@ const Attendance: FC<Props> = ({
   let attendedTotal = 0;
   let guestFeeTotal = 0;
 
+  const [search, setSearch] = useState('');
+  const debouncedSearchTerm = useDebounce(search, 300);
+  const [data, setData] = useState(members);
+
+  useEffect(() => {
+    if (debouncedSearchTerm === '') {
+      setData(members);
+    } else {
+      setData(members.filter((member) => member.name.match(new RegExp(debouncedSearchTerm, 'i'))))
+    }
+
+  }, [debouncedSearchTerm, members]);
+
   const user = useContext(UserContext);
   useEffect(() => {
     (async () => {
@@ -106,10 +122,15 @@ const Attendance: FC<Props> = ({
         <Col xs={12} md={12}>
           <Card>
             <CardBody>
-              <AttendanceForm
-                formData={formData}
-                setFormData={setFormData}
-              />
+              <FormGroup>
+                <AttendanceForm
+                  formData={formData}
+                  setFormData={setFormData}
+                />
+              </FormGroup>
+              <FormGroup>
+                <Input name="search" onChange={(e: any) => setSearch(e.target.value)} placeholder="search..." />
+              </FormGroup>
               <Table style={{ width: '100%' }}>
                 <thead>
                   <tr>
@@ -122,7 +143,7 @@ const Attendance: FC<Props> = ({
                 </thead>
                 <tbody>
                   {
-                    members
+                    data
                       .map((member: IMember, i: number) => {
                         // do we have an attendance for the date/member?
                         const record = attendance.find((row: IAttendance) => {

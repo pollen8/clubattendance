@@ -11,11 +11,8 @@ import { bindActionCreators } from 'redux';
 import Button from '@bit/pollen8.fab-ui.button';
 import Card from '@bit/pollen8.fab-ui.card';
 import CardBody from '@bit/pollen8.fab-ui.card-body';
-import Col from '@bit/pollen8.fab-ui.col';
 import FormGroup from '@bit/pollen8.fab-ui.form-group';
-import Input from '@bit/pollen8.fab-ui.input';
 import Label from '@bit/pollen8.fab-ui.label';
-import Row from '@bit/pollen8.fab-ui.row';
 
 import {
   Checkbox,
