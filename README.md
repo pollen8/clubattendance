@@ -5,6 +5,9 @@
 Install with 
 > npm i --legcy-peer-deps
 
+Install the firebase CLI - required to publish
+
+> https://firebase.google.com/docs/cli
 
 # Development server
 
@@ -12,9 +15,10 @@ Install with
 npm run start
 `
 
-# Deployment
+# Deployment to firebase servers
 
 `
+firebase login
 npm run deploy
 `
 
