@@ -41,6 +41,7 @@ export interface IMember {
   season?: any;
   gender?: 'male' | 'female' | 'other';
   tel?: string;
+  email?: string;
 }
 
 export const blankMember: IMember = {

@@ -71,6 +71,18 @@ const MemberForm: FC<Props> = ({
       </Row>
       <Row>
         <Col>
+          <Label htmlFor="email">Email
+        </Label>
+          <Input
+            id="email"
+            value={formData.email}
+            onChange={(e) => {
+              setFormData({ ...formData, email: e.target.value });
+            }} />
+        </Col>
+      </Row>
+      <Row>
+        <Col>
           <Label htmlFor="membership">Membership</Label>
           <Select
             id="membership"

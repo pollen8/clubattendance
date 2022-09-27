@@ -58,7 +58,7 @@ const AttendanceForm: FC<Props> = ({
         <DatePicker
           clearIcon={null}
           value={new Date(formData.clubNight)}
-          onChange={(v) => {
+          onChange={(v: any) => {
             const date = Array.isArray(v) ? v[0] : v;
             const clubNight = new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime();
             setFormData({

@@ -1,5 +1,6 @@
 import React, {
   FC,
+  PropsWithChildren,
   useState,
 } from 'react';
 import { IoMdTrash } from 'react-icons/io';
@@ -13,6 +14,8 @@ interface IProps {
   onDelete: (e: any) => void;
 }
 
+let M = (Modal as React.ComponentType<any & PropsWithChildren>);
+
 export const DeleteConfirmation: FC<IProps> = ({ onDelete }) => {
   const [open, onToggle] = useState(false);
   return (
@@ -22,7 +25,7 @@ export const DeleteConfirmation: FC<IProps> = ({ onDelete }) => {
         onClick={() => onToggle(true)}>
         X
       </Button>
-      <Modal open={open}
+      <M open={open}
         closeIconSize={0}
         styles={{
           modal: {
@@ -31,6 +34,7 @@ export const DeleteConfirmation: FC<IProps> = ({ onDelete }) => {
           }
         }}
         onClose={() => onToggle(false)} center>
+          <>
         <ModalBody>
           <h3>Are you sure you want to delete?</h3>
         </ModalBody>
@@ -52,7 +56,8 @@ export const DeleteConfirmation: FC<IProps> = ({ onDelete }) => {
             <IoMdTrash />Delete
         </Button>
         </ModalFooter>
-      </Modal>
+        </>
+      </M>
     </>
   );
 }

@@ -164,7 +164,7 @@ const TeamForm: FC<Props> = ({
           <DatePicker
             clearIcon={null}
             value={new Date(formData.date)}
-            onChange={(v) => {
+            onChange={(v: any) => {
               const d = Array.isArray(v) ? v[0] : v;
               const date = new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
               setFormData({

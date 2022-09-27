@@ -1,5 +1,8 @@
 import './App.css';
+import 'firebase/compat/auth';
+import 'firebase/compat/firestore';
 
+import firebase from 'firebase/compat/app';
 import React, {
   createContext,
   useEffect,
@@ -8,8 +11,9 @@ import React, {
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 import { Provider } from 'react-redux';
 import {
+  BrowserRouter,
   Route,
-  Router,
+  Routes,
 } from 'react-router-dom';
 import styled, { ThemeProvider } from 'styled-components';
 
@@ -21,7 +25,6 @@ import {
   auth,
   uiConfig,
 } from './fire';
-import history from './history';
 import Matches from './Matches/Matches';
 import Members from './Members/Members';
 import Teams from './Teams/Teams';
@@ -50,7 +53,7 @@ function App() {
   }, []);
   return (
     <Provider store={store}>
-      <Router history={history}>
+      <BrowserRouter>
         <ThemeProvider theme={theme}>
           <UserContext.Provider value={user}>
             <div>
@@ -65,19 +68,19 @@ function App() {
                 }
 
                 {
-                  user && <>
-                    <Route path="/" exact render={(props: any) => <Attendance {...props} />} />
-                    <Route path="/members" render={(props: any) => <Members {...props} />} />
-                    <Route path="/teams" render={(props: any) => <Teams {...props} />} />
-                    <Route path="/clubs" render={(props: any) => <Clubs {...props} />} />
-                    <Route path="/matches" render={(props: any) => <Matches {...props} />} />
-                  </>
+                  user && <Routes>
+                    <Route path="/" element={<Attendance />} />
+                    <Route path="/members" element={<Members />} />
+                    <Route path="/teams" element={<Teams />} />
+                    <Route path="/clubs" element={<Clubs />} />
+                    <Route path="/matches" element={<Matches />} />
+                  </Routes>
                 }
               </Background>
             </div>
           </UserContext.Provider>
         </ThemeProvider>
-      </Router>
+      </BrowserRouter>
       <div id="destination" />
     </Provider>
   );

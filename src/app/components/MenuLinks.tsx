@@ -9,10 +9,10 @@ export const MenuLinks: FC<IProps> = ({ onClick }) => {
   return (
     <>
       <li>
-        <NavLink onClick={() => onClick && onClick()} exact to="/">Attendance</NavLink>
+        <NavLink onClick={() => onClick && onClick()} to="/">Attendance</NavLink>
       </li>
       <li>
-        <NavLink onClick={() => onClick && onClick()} exact to="/members">Members</NavLink>
+        <NavLink onClick={() => onClick && onClick()} to="/members">Members</NavLink>
       </li>
       {/* <li>
         <NavLink onClick={() => onClick && onClick()}
