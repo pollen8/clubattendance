@@ -23,6 +23,7 @@
     "isolatedModules": true
   },
   "include": [
-    "src"
+    "src",
+    "src/theme/styled.d.ts",
   ]
 }

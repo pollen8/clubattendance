@@ -1,6 +1,6 @@
 
 import React, {
-  FC,
+  ChangeEvent,
   useState,
 } from 'react';
 import { connect } from 'react-redux';
@@ -34,11 +34,11 @@ type Props = {
   club: IClub;
 } & ReturnType<typeof mapDispatchToProps>;
 
-const ClubTeams: FC<Props> = ({
+const ClubTeams = ({
   club,
   deleteClubTeam,
   addClubTeam,
-}) => {
+}: Props) => {
   const teams = club.teams || [];
   const [formData, setFormData] = useState<string>('');
   if (club.id === '') {
@@ -90,7 +90,7 @@ const ClubTeams: FC<Props> = ({
             <FormGroup>
               <Label>Team name</Label>
               <Input type="text"
-                onChange={(e) => setFormData(e.target.value)}
+                onChange={(e: ChangeEvent<HTMLInputElement>) => setFormData(e.target.value)}
                 value={formData}
               />
             </FormGroup>

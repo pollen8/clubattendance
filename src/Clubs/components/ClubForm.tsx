@@ -1,6 +1,6 @@
 
 import React, {
-  FC,
+  ChangeEvent,
   useEffect,
   useState,
 } from 'react';
@@ -34,10 +34,10 @@ type Props = ReturnType<typeof mapDispatchToProps> & {
   initialData: IClub,
 };
 
-const ClubForm: FC<Props> = ({
+const ClubForm = ({
   upsertTeam,
   initialData,
-}) => {
+}: Props) => {
   const [formData, setFormData] = useState<IClub>(initialData);
   useEffect(() => {
     setFormData(initialData);
@@ -53,7 +53,7 @@ const ClubForm: FC<Props> = ({
             <Input
               id="name"
               value={formData.name}
-              onChange={(e) => {
+              onChange={(e: ChangeEvent<HTMLInputElement>) => {
                 setFormData({ ...formData, name: e.target.value });
               }} />
           </FormGroup>

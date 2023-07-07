@@ -1,7 +1,4 @@
-import React, {
-  FC,
-  useContext,
-} from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
 import useMedia from 'use-media';
 
@@ -39,7 +36,7 @@ const Bar = styled.div<{ isWide: boolean }>`
   margin: 0 0.5rem;
 `;
 
-export const Header: FC = () => {
+export const Header = () => {
   const user = useContext(UserContext);
   const isWide = useMedia('(min-width: 1000px)');
   return <Container>

@@ -1,6 +1,5 @@
 
 import React, {
-  FC,
   useContext,
   useEffect,
   useState,
@@ -62,7 +61,11 @@ const mapDispatchToProps = (dispatch: any) =>
 type Props = ReturnType<typeof mapDispatchToProps>
   & ReturnType<typeof mapStateToProps>;
 
-const Matches: FC<Props> = ({ getMatches, matches, deleteMatch }) => {
+const Matches = ({ 
+  getMatches,
+  matches, 
+  deleteMatch,
+}: Props) => {
 
   useEffect(() => {
     (async () => {

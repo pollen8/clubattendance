@@ -41,8 +41,8 @@ const getClubNightManagers = (): ThunkResult<Action, IGlobalState, void> => {
           id: String(doc.id),
         }
         managers.push(record);
-        dispatch({ type: 'SET_CLUB_NIGHT_MANAGERS', data: managers });
       });
+      dispatch({ type: 'SET_CLUB_NIGHT_MANAGERS', data: managers });
     } catch (err) {
       console.error(err);
     }

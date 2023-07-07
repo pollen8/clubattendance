@@ -1,5 +1,5 @@
 import React, {
-  FC,
+  ChangeEvent,
   useEffect,
   useState,
 } from 'react';
@@ -75,7 +75,7 @@ type Props = ReturnType<typeof mapStateToProps>
     initialData: IMatch,
   };
 
-const TeamForm: FC<Props> = ({
+const TeamForm = ({
   upsertMatch,
   initialData,
   getMembers,
@@ -84,7 +84,7 @@ const TeamForm: FC<Props> = ({
   clubs,
   teams,
   getTeams,
-}) => {
+}: Props) => {
   const [formData, setFormData] = useState<IMatch>(initialData);
   useEffect(() => {
     setFormData(initialData);
@@ -269,7 +269,7 @@ const TeamForm: FC<Props> = ({
                   <td>
                     <Checkbox type="checkbox"
                       checked={n.paid}
-                      onChange={(e) => {
+                      onChange={(e: ChangeEvent<HTMLInputElement>) => {
                         const players = [...formData.players];
                         players[i] = { ...players[i], paid: e.target.checked };
                         setFormData({
@@ -282,7 +282,7 @@ const TeamForm: FC<Props> = ({
                   <td>
                     <Checkbox type="checkbox"
                       checked={n.direct}
-                      onChange={(e) => {
+                      onChange={(e: ChangeEvent<HTMLInputElement>) => {
                         const players = [...formData.players];
                         players[i] = { ...players[i], direct: e.target.checked };
                         setFormData({

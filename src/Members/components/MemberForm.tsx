@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { ChangeEvent } from 'react';
 import { connect } from 'react-redux';
 import Select from 'react-select';
 import { bindActionCreators } from 'redux';
@@ -37,11 +37,11 @@ interface IProps {
 
 type Props = IProps & ReturnType<typeof mapDispatchToProps>;
 
-const MemberForm: FC<Props> = ({
+const MemberForm = ({
   formData,
   setFormData,
   upsertMember,
-}) => {
+}: Props) => {
   return (
     <>
       <Row>
@@ -52,7 +52,7 @@ const MemberForm: FC<Props> = ({
           <Input
             id="name"
             value={formData.name}
-            onChange={(e) => {
+            onChange={(e: ChangeEvent<HTMLInputElement>) => {
               setFormData({ ...formData, name: e.target.value });
             }} />
         </Col>
@@ -64,7 +64,7 @@ const MemberForm: FC<Props> = ({
           <Input
             id="tel"
             value={formData.tel}
-            onChange={(e) => {
+            onChange={(e: ChangeEvent<HTMLInputElement>) => {
               setFormData({ ...formData, tel: e.target.value });
             }} />
         </Col>
@@ -76,7 +76,7 @@ const MemberForm: FC<Props> = ({
           <Input
             id="email"
             value={formData.email}
-            onChange={(e) => {
+            onChange={(e: ChangeEvent<HTMLInputElement>) => {
               setFormData({ ...formData, email: e.target.value });
             }} />
         </Col>
@@ -105,7 +105,7 @@ const MemberForm: FC<Props> = ({
           <Label>
             <Checkbox type="radio"
               checked={formData.gender === 'male'}
-              onChange={(e) => setFormData({
+              onChange={(e: ChangeEvent<HTMLInputElement>) => setFormData({
                 ...formData,
                 gender: 'male'
               })} />{' '}
@@ -115,7 +115,7 @@ const MemberForm: FC<Props> = ({
           <Label>
             <Checkbox type="radio"
               checked={formData.gender === 'female'}
-              onChange={(e) => setFormData({
+              onChange={(e: ChangeEvent<HTMLInputElement>) => setFormData({
                 ...formData,
                 gender: 'female'
               })} />
@@ -124,7 +124,7 @@ const MemberForm: FC<Props> = ({
           <Label>
             <Checkbox type="radio"
               checked={formData.gender === 'other'}
-              onChange={(e) => setFormData({
+              onChange={(e: ChangeEvent<HTMLInputElement>) => setFormData({
                 ...formData,
                 gender: 'other'
               })} />
@@ -145,7 +145,7 @@ const MemberForm: FC<Props> = ({
               <Checkbox type="checkbox"
                 id="paid"
                 checked={formData.paid}
-                onChange={(e) => setFormData({
+                onChange={(e: ChangeEvent<HTMLInputElement>) => setFormData({
                   ...formData,
                   paid: e.target.checked,
                 })}

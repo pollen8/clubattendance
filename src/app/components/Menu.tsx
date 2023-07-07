@@ -1,6 +1,5 @@
 
 import React, {
-  FC,
   useRef,
   useState,
 } from 'react';
@@ -74,7 +73,7 @@ const Burger = styled.div`
 `;
 
 
-export const Menu: FC = () => {
+export const Menu = () => {
   const circleRef = useRef(null);
   const [dropdownVisible, setDropdownVisible] = useState(false);
   useClickOutside(circleRef, () => setDropdownVisible(false));

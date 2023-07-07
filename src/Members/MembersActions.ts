@@ -20,7 +20,8 @@ const getMembers = (): ThunkResult<Action, IGlobalState, void> => {
           id: String(doc.id),
         }
         data.push(member);
-      });
+      })
+    
       dispatch({ type: 'SET_MEMBERS', data });
     } catch (err) {
       console.error(err);

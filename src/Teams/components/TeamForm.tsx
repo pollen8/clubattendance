@@ -1,5 +1,5 @@
 import React, {
-  FC,
+  ChangeEvent,
   useEffect,
   useState,
 } from 'react';
@@ -49,12 +49,12 @@ type Props = ReturnType<typeof mapStateToProps>
     initialData: ITeam,
   };
 
-const TeamForm: FC<Props> = ({
+const TeamForm = ({
   upsertTeam,
   initialData,
   getMembers,
   memberOptions,
-}) => {
+}: Props) => {
   const [formData, setFormData] = useState<ITeam>(initialData);
   useEffect(() => {
     setFormData(initialData);
@@ -70,7 +70,7 @@ const TeamForm: FC<Props> = ({
           <Input
             id="name"
             value={formData.name}
-            onChange={(e) => {
+            onChange={(e: ChangeEvent<HTMLInputElement>) => {
               setFormData({ ...formData, name: e.target.value });
             }} />
         </FormGroup>
@@ -95,7 +95,7 @@ const TeamForm: FC<Props> = ({
             <Label>Number players</Label>
             <Input type="number"
               value={formData.places}
-              onChange={(e) => setFormData({ ...formData, places: Number(e.target.value) })}
+              onChange={(e: ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, places: Number(e.target.value) })}
             />
           </FormGroup>
           <Row noGutters>
@@ -104,7 +104,7 @@ const TeamForm: FC<Props> = ({
                 <Label>Of which must be female players</Label>
                 <Input type="number"
                   value={formData.placesFemale}
-                  onChange={(e) => setFormData({ ...formData, placesFemale: Number(e.target.value) })}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, placesFemale: Number(e.target.value) })}
                 />
               </FormGroup>
             </Col>
@@ -113,7 +113,7 @@ const TeamForm: FC<Props> = ({
                 <Label>Of which must be male players</Label>
                 <Input type="number"
                   value={formData.placesMale}
-                  onChange={(e) => setFormData({ ...formData, placesMale: Number(e.target.value) })}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, placesMale: Number(e.target.value) })}
                 />
               </FormGroup>
             </Col>

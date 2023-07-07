@@ -1,5 +1,5 @@
 import React, {
-  FC,
+  ChangeEvent,
   useState,
 } from 'react';
 
@@ -9,8 +9,8 @@ type TWinner = 'home' | 'visitor' | '';
 
 export type TMatchScore = ISet[];
 export interface ISet {
-  home: number | string;
-  visitors: number | string;
+  home: number;
+  visitors: number
 }
 
 const style = { width: '1rem', marginRight: '0.75rem', marginBottom: '0.75rem' };
@@ -43,32 +43,32 @@ const calculateWinner = (score: TMatchScore): TWinner => {
 
 }
 
-interface IProps {
+type Props = {
   onChange: (v: TMatchScore) => void;
   value: TMatchScore;
 }
 
-const GameScore: FC<IProps> = ({
+const GameScore = ({
   onChange,
   value,
-}) => {
+}: Props) => {
   const [matchScore, setMatchScore] = useState<TMatchScore>(value);
   return (
     <>
       <Input style={style}
         value={matchScore[0].home}
-        onChange={(e) => {
+        onChange={(e: ChangeEvent<HTMLInputElement>) => {
           const s = [...matchScore]
-          s[0].home = e.target.value === '' ? '' : parseInt(e.target.value, 10);
+          s[0].home = e.target.value === '' ? 0 : parseInt(e.target.value, 10);
           setMatchScore(s);
           onChange(s);
         }}
       />
       <Input style={style}
         value={matchScore[0].visitors}
-        onChange={(e) => {
+        onChange={(e: ChangeEvent<HTMLInputElement>) => {
           const s = [...matchScore]
-          s[0].visitors = e.target.value === '' ? '' : parseInt(e.target.value, 10);
+          s[0].visitors = e.target.value === '' ? 0 : parseInt(e.target.value, 10);
           setMatchScore(s);
           onChange(s);
         }}
@@ -76,18 +76,18 @@ const GameScore: FC<IProps> = ({
       <br />
       <Input style={style}
         value={matchScore[1].home}
-        onChange={(e) => {
+        onChange={(e: ChangeEvent<HTMLInputElement>) => {
           const s = [...matchScore]
-          s[1].home = e.target.value === '' ? '' : parseInt(e.target.value, 10);
+          s[1].home = e.target.value === '' ? 0 : parseInt(e.target.value, 10);
           setMatchScore(s);
           onChange(s);
         }}
       />
       <Input style={style}
         value={matchScore[1].visitors}
-        onChange={(e) => {
+        onChange={(e: ChangeEvent<HTMLInputElement>) => {
           const s = [...matchScore]
-          s[1].visitors = e.target.value === '' ? '' : parseInt(e.target.value, 10);
+          s[1].visitors = e.target.value === '' ? 0 : parseInt(e.target.value, 10);
           setMatchScore(s);
           onChange(s);
         }}
@@ -95,17 +95,17 @@ const GameScore: FC<IProps> = ({
       <br />
       <Input style={style}
         value={matchScore[2].home}
-        onChange={(e) => {
+        onChange={(e: ChangeEvent<HTMLInputElement>) => {
           const s = [...matchScore]
-          s[2].home = e.target.value === '' ? '' : parseInt(e.target.value, 10);
+          s[2].home = e.target.value === '' ? 0 : parseInt(e.target.value, 10);
           setMatchScore(s);
           onChange(s);
         }}
       />
       <Input style={style}
-        onChange={(e) => {
+        onChange={(e: ChangeEvent<HTMLInputElement>) => {
           const s = [...matchScore]
-          s[2].visitors = e.target.value === '' ? '' : parseInt(e.target.value, 10);
+          s[2].visitors = e.target.value === '' ? 0 : parseInt(e.target.value, 10);
           setMatchScore(s);
           onChange(s);
         }}

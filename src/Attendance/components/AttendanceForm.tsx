@@ -1,7 +1,4 @@
-import React, {
-  FC,
-  useContext,
-} from 'react';
+import React, { useContext } from 'react';
 import DatePicker from 'react-date-picker';
 import { connect } from 'react-redux';
 import Select from 'react-select';
@@ -37,13 +34,13 @@ const mapDispatchToProps = (dispatch: any) =>
 type Props = IProps & ReturnType<typeof mapDispatchToProps>
   & ReturnType<typeof mapStateToProps>;
 
-const AttendanceForm: FC<Props> = ({
+const AttendanceForm = ({
   formData,
   clubNightManagers,
   memberOptions,
   setFormData,
   upsertClubNightManager,
-}) => {
+}: Props) => {
   const m = clubNightManagers.find((manager) => manager.clubNight === formData.clubNight);
   const manager = m === undefined
     ? { value: blankMember, label: '' }

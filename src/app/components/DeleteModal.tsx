@@ -1,5 +1,4 @@
 import React, {
-  FC,
   PropsWithChildren,
   useState,
 } from 'react';
@@ -16,7 +15,7 @@ interface IProps {
 
 let M = (Modal as React.ComponentType<any & PropsWithChildren>);
 
-export const DeleteConfirmation: FC<IProps> = ({ onDelete }) => {
+export const DeleteConfirmation = ({ onDelete }: IProps) => {
   const [open, onToggle] = useState(false);
   return (
     <>

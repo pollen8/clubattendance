@@ -1,5 +1,6 @@
 import React, {
-  FC,
+  ChangeEvent,
+  PropsWithChildren,
   useContext,
   useEffect,
   useState,
@@ -7,6 +8,8 @@ import React, {
 import {
   MdClose,
   MdDone,
+  MdKeyboardArrowDown,
+  MdKeyboardArrowUp,
 } from 'react-icons/md';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -73,6 +76,14 @@ const blankForm: IAttendance = {
   member: '',
   paid: false,
 };
+const HeadButton= styled.button`
+  background: transparent;
+  border: 0;
+  padding:  0;
+  height: 2.4rem;
+  text-transform: uppercase;
+  color: #AEBECD;
+`;
 
 interface IProps {
   theme: Partial<typeof theme>;
@@ -81,7 +92,48 @@ interface IProps {
 type Props = IProps & ReturnType<typeof mapStateToProps>
   & ReturnType<typeof mapDispatchToProps>;
 
-const Attendance: FC<Props> = ({
+  const useSort = <T extends {}>(defaultSort: keyof T) => {
+    const [sort, updateSort] = useState<keyof T>(defaultSort);
+    const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc');
+
+    const setSort = (col: keyof T) => {
+      if (sort === col) {
+        setSortDir(sortDir === 'asc' ? 'desc' : 'asc');
+      } else {
+        setSortDir('asc')
+      }
+      updateSort(col);
+    }
+    const sorter = (a: T, b: T) => {
+      return a[sort] > b[sort] ? 1 : -1;
+    }
+    return {
+      sort,
+      setSort,
+      sortDir,
+      sorter,
+    }
+  }
+
+  type SortableProps = {name: keyof IMember, setSort: (sort: keyof IMember) => void, sort: keyof IMember, sortDir: 'asc' | 'desc'};
+  const Sortable = ({
+    name,
+    setSort,
+    sort,
+    sortDir,
+    children,
+  }: PropsWithChildren<SortableProps>) => {
+    return (
+      <HeadButton onClick={() => setSort(name)}>
+        {
+          sort === name && 
+         ( sortDir === 'asc'
+          ?<MdKeyboardArrowUp />
+          :<MdKeyboardArrowDown />)
+         } {children}</HeadButton>
+    )
+  }
+const Attendance = ({
   theme,
   attendance,
   getAttendance,
@@ -89,9 +141,10 @@ const Attendance: FC<Props> = ({
   getMembers,
   getClubNightManagers,
   upsertAttendance,
-}) => {
+}: Props) => {
   const [formData, setFormData] = useState<IAttendance>(blankForm);
-
+  
+  const sort = useSort<IMember>('name');
   let attendedTotal = 0;
   let guestFeeTotal = 0;
 
@@ -134,16 +187,27 @@ const Attendance: FC<Props> = ({
               <Table style={{ width: '100%' }}>
                 <thead>
                   <tr>
-                    <th>Member</th>
-                    <th>Type</th>
+                    <th>
+                      <Sortable name="name" {...sort}>Member</Sortable>
+                    </th>
+                    <th>
+                      <Sortable name="membership" {...sort}>Type</Sortable>
+                    </th>
                     <th>Attended</th>
-                    <th>Paid</th>
+                    <th>
+                    <Sortable name="paid" {...sort}>Paid</Sortable>
+                    </th>
                     <th>-</th>
                   </tr>
                 </thead>
                 <tbody>
                   {
-                    data
+                    structuredClone(data)
+                    .sort( (a, b) => {
+                      return sort.sortDir === 'asc' 
+                      ? a[sort.sort] > b[sort.sort] ? 1 : -1
+                      : a[sort.sort] < b[sort.sort] ? 1 : -1;
+                    })
                       .map((member: IMember, i: number) => {
                         // do we have an attendance for the date/member?
                         const record = attendance.find((row: IAttendance) => {
@@ -170,7 +234,7 @@ const Attendance: FC<Props> = ({
                           <td>
                             <Checkbox type="checkbox"
                               checked={record && record.attended}
-                              onChange={(e) => {
+                              onChange={(e: ChangeEvent<HTMLInputElement>) => {
                                 const attendance: IAttendance = {
                                   ...formData,
                                   attended: e.target.checked,
@@ -186,7 +250,7 @@ const Attendance: FC<Props> = ({
                               member.membership === 'guest' && <Checkbox
                                 type="checkbox"
                                 checked={record && record.paid}
-                                onChange={(e) => {
+                                onChange={(e: ChangeEvent<HTMLInputElement>) => {
                                   const attendance: IAttendance = {
                                     ...formData,
                                     member: member.id,

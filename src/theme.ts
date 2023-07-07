@@ -1,4 +1,6 @@
-export const theme = {
+import { DefaultTheme } from 'styled-components';
+
+export const theme: DefaultTheme = {
   onBackground: '#FFF',
   danger100: '#F8E5E6',
   danger300: '#fd9999',
