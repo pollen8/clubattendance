@@ -22,8 +22,10 @@ import Row from '@bit/pollen8.fab-ui.row';
 import { UserContext } from '../App';
 import { DeleteConfirmation } from '../app/components/DeleteModal';
 import { PageContainer } from '../app/components/PageContainer';
+import { Sortable } from '../app/components/SortableLink';
 import { Table } from '../app/components/Table';
 import { useDebounce } from '../app/hooks/useDebounce';
+import { useSort } from '../app/hooks/useSort';
 import { IGlobalState } from '../reducers';
 import { theme } from '../theme';
 import MemberForm from './components/MemberForm';
@@ -60,7 +62,12 @@ interface IProps {
 type Props = IProps & ReturnType<typeof mapStateToProps>
   & ReturnType<typeof mapDispatchToProps>;
 
-const Members = ({ theme, getMembers, members, upsertMember, deleteMember }: Props) => {
+const Members = ({
+  theme,
+  getMembers,
+  members, 
+  deleteMember,
+ }: Props) => {
   const user = useContext(UserContext);
   const [formData, setFormData] = useState<IMember>({
     ...blankMember,
@@ -84,6 +91,7 @@ const Members = ({ theme, getMembers, members, upsertMember, deleteMember }: Pro
       await getMembers();
     })();
   }, [getMembers]);
+  const sort = useSort<IMember>('name');
 
   return (
     <PageContainer>
@@ -114,15 +122,27 @@ const Members = ({ theme, getMembers, members, upsertMember, deleteMember }: Pro
                     <Table style={{ width: '100%' }}>
                       <thead>
                         <tr>
-                          <th>Name</th>
-                          <th>Membership</th>
-                          <th>Paid</th>
+                          <th>
+                            <Sortable name="name" {...sort}>Name</Sortable>
+                          </th>
+                          <th>
+                          <Sortable name="membership" {...sort}>Membership</Sortable>
+                          </th>
+                          <th>
+                          <Sortable name="paid" {...sort}>Paid</Sortable>
+                          </th>
                           <th></th>
                         </tr>
                       </thead>
                       <tbody>
                         {
-                          data.map((line: IMember, i: number) => {
+                          structuredClone(data)
+                          .sort( (a, b) => {
+                            return sort.sortDir === 'asc' 
+                            ? a[sort.sort] > b[sort.sort] ? 1 : a[sort.sort] < b[sort.sort] ? -1 : 0
+                            : a[sort.sort] < b[sort.sort] ? 1 : a[sort.sort] > b[sort.sort] ? -1 : 0;
+                          })
+                          .map((line: IMember, i: number) => {
                             return <tr key={line.id}
 
                               onClick={() => setFormData({

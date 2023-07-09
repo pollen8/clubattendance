@@ -1,6 +1,5 @@
 import React, {
   ChangeEvent,
-  PropsWithChildren,
   useContext,
   useEffect,
   useState,
@@ -8,8 +7,6 @@ import React, {
 import {
   MdClose,
   MdDone,
-  MdKeyboardArrowDown,
-  MdKeyboardArrowUp,
 } from 'react-icons/md';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -24,11 +21,13 @@ import Row from '@bit/pollen8.fab-ui.row';
 
 import { UserContext } from '../App';
 import { PageContainer } from '../app/components/PageContainer';
+import { Sortable } from '../app/components/SortableLink';
 import {
   Checkbox,
   Table,
 } from '../app/components/Table';
 import { useDebounce } from '../app/hooks/useDebounce';
+import { useSort } from '../app/hooks/useSort';
 import { IMember } from '../Members/Members';
 import * as membersActions from '../Members/MembersActions';
 import { IGlobalState } from '../reducers';
@@ -76,14 +75,7 @@ const blankForm: IAttendance = {
   member: '',
   paid: false,
 };
-const HeadButton= styled.button`
-  background: transparent;
-  border: 0;
-  padding:  0;
-  height: 2.4rem;
-  text-transform: uppercase;
-  color: #AEBECD;
-`;
+
 
 interface IProps {
   theme: Partial<typeof theme>;
@@ -92,47 +84,6 @@ interface IProps {
 type Props = IProps & ReturnType<typeof mapStateToProps>
   & ReturnType<typeof mapDispatchToProps>;
 
-  const useSort = <T extends {}>(defaultSort: keyof T) => {
-    const [sort, updateSort] = useState<keyof T>(defaultSort);
-    const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc');
-
-    const setSort = (col: keyof T) => {
-      if (sort === col) {
-        setSortDir(sortDir === 'asc' ? 'desc' : 'asc');
-      } else {
-        setSortDir('asc')
-      }
-      updateSort(col);
-    }
-    const sorter = (a: T, b: T) => {
-      return a[sort] > b[sort] ? 1 : -1;
-    }
-    return {
-      sort,
-      setSort,
-      sortDir,
-      sorter,
-    }
-  }
-
-  type SortableProps = {name: keyof IMember, setSort: (sort: keyof IMember) => void, sort: keyof IMember, sortDir: 'asc' | 'desc'};
-  const Sortable = ({
-    name,
-    setSort,
-    sort,
-    sortDir,
-    children,
-  }: PropsWithChildren<SortableProps>) => {
-    return (
-      <HeadButton onClick={() => setSort(name)}>
-        {
-          sort === name && 
-         ( sortDir === 'asc'
-          ?<MdKeyboardArrowUp />
-          :<MdKeyboardArrowDown />)
-         } {children}</HeadButton>
-    )
-  }
 const Attendance = ({
   theme,
   attendance,
