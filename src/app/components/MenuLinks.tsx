@@ -1,11 +1,13 @@
-import React, { FC } from 'react';
+import React from 'react';
 import { NavLink } from 'react-router-dom';
 
-interface IProps {
+type Props = {
   onClick?: () => void;
 }
 
-export const MenuLinks: FC<IProps> = ({ onClick }) => {
+export const MenuLinks = ({ 
+  onClick,
+ }:Props) => {
   return (
     <>
       <li>
@@ -13,6 +15,9 @@ export const MenuLinks: FC<IProps> = ({ onClick }) => {
       </li>
       <li>
         <NavLink onClick={() => onClick && onClick()} to="/members">Members</NavLink>
+      </li>
+      <li>
+        <NavLink onClick={() => onClick && onClick()} to="/reports">Reports</NavLink>
       </li>
       {/* <li>
         <NavLink onClick={() => onClick && onClick()}

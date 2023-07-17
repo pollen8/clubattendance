@@ -27,6 +27,7 @@ import {
 } from './fire';
 import Matches from './Matches/Matches';
 import Members from './Members/Members';
+import { Reports } from './Reports/Reports';
 import Teams from './Teams/Teams';
 import { theme } from './theme';
 
@@ -74,6 +75,7 @@ function App() {
                     <Route path="/teams" element={<Teams />} />
                     <Route path="/clubs" element={<Clubs />} />
                     <Route path="/matches" element={<Matches />} />
+                    <Route path="/reports" element={<Reports />} />
                   </Routes>
                 }
               </Background>
